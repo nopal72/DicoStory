@@ -7,4 +7,5 @@
     <string name="email">Email</string>
     <string name="password">password</string>
     <string name="login">login</string>
+    <string name="text_signup">belum punya akun? <b>signup</b></string>
 </resources>
