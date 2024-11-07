@@ -8,4 +8,6 @@
     <string name="password">password</string>
     <string name="login">login</string>
     <string name="text_signup">belum punya akun? <b>signup</b></string>
+    <string name="type_password">masukkan password</string>
+    <string name="error_password">password harus lebih dari 8 karakter!</string>
 </resources>
