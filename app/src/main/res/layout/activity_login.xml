@@ -25,12 +25,13 @@
         android:id="@+id/tagLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="16dp"
         android:text="@string/tag_line"
         android:textColor="@color/black"
-        android:layout_margin="16dp"
         app:layout_constraintBottom_toTopOf="@+id/text_email"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/text_email"
