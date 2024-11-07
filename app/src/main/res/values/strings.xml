@@ -4,4 +4,6 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="tag_line">Di Setiap Cerita Ada Makna, dan di Setiap Makna Ada Keberanian untuk Berbagi</string>
+    <string name="email">Email</string>
+    <string name="password">password</string>
 </resources>
