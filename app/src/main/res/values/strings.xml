@@ -6,4 +6,5 @@
     <string name="tag_line">Di Setiap Cerita Ada Makna, dan di Setiap Makna Ada Keberanian untuk Berbagi</string>
     <string name="email">Email</string>
     <string name="password">password</string>
+    <string name="login">login</string>
 </resources>
