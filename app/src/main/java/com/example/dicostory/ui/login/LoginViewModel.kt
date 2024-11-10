@@ -7,10 +7,5 @@ import com.example.dicostory.data.pref.User
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val repository: UserRepository) : ViewModel() {
-    fun login(email: String, password: String) = repository.login(email, password)
-    {
-        viewModelScope.launch {
-            repository.saveSession(User.UserModel(email, it.loginResult.token))
-        }
-    }
+
 }

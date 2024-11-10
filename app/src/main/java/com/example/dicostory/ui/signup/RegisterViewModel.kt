@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.dicostory.data.api.ApiConfig
 import com.example.dicostory.data.api.RegisterResponse
-import com.example.dicostory.data.pref.User
+import com.example.dicostory.data.pref.RegisterRequest
 
 class RegisterViewModel : ViewModel() {
 
@@ -20,7 +20,8 @@ class RegisterViewModel : ViewModel() {
     val errorMessage: LiveData<String> = _errorMessage
 
 
-    fun registerUser(request: User.RegisterRequest) {
+    fun registerUser(request: RegisterRequest) {
+        _isLoading.value = true
         val client = ApiConfig.getApiService().registerUser(request)
         client.enqueue(object : retrofit2.Callback<RegisterResponse> {
             override fun onResponse(

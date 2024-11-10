@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.dicostory.R
+import com.example.dicostory.data.pref.RegisterRequest
 import com.example.dicostory.data.pref.User
 import com.example.dicostory.databinding.ActivityRegisterBinding
 import com.example.dicostory.ui.login.LoginActivity
@@ -42,7 +43,7 @@ class RegisterActivity : AppCompatActivity() {
             val verifyPassword = binding.edVerifyPassword.text.toString()
 
             if (password == verifyPassword) {
-                val request = User.RegisterRequest(name, email, password)
+                val request = RegisterRequest(name, email, password)
                 registerViewModel.registerUser(request)
             } else {
                 showToast(getString(R.string.password_mismatch))
