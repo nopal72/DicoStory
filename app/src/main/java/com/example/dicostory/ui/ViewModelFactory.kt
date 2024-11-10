@@ -7,6 +7,7 @@ import com.example.dicostory.MainActivity
 import com.example.dicostory.data.UserRepository
 import com.example.dicostory.di.Injection
 import com.example.dicostory.ui.home.HomeViewModel
+import com.example.dicostory.ui.signup.RegisterViewModel
 
 class ViewModelFactory(private val repository: UserRepository) : ViewModelProvider.NewInstanceFactory() {
 

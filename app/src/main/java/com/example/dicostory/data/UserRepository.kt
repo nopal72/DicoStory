@@ -1,25 +1,27 @@
 package com.example.dicostory.data
 
-import com.example.dicostory.data.pref.UserModel
+import com.example.dicostory.data.api.ApiConfig
+import com.example.dicostory.data.api.ApiService
+import com.example.dicostory.data.api.RegisterResponse
+import com.example.dicostory.data.pref.User
 import com.example.dicostory.data.pref.UserPreference
 import kotlinx.coroutines.flow.Flow
 
 class UserRepository private constructor(
-private val userPreference: UserPreference
+private val userPreference: UserPreference, private val apiService: ApiService
 ){
 
-    suspend fun saveSession(user: UserModel){
+    suspend fun saveSession(user: User.UserModel){
         userPreference.saveSession(user)
     }
 
-    fun getSession(): Flow<UserModel> {
+    fun getSession(): Flow<User.UserModel> {
         return userPreference.getSession()
     }
 
     suspend fun logout(){
         userPreference.logout()
     }
-
 
     companion object {
         @Volatile
@@ -28,9 +30,8 @@ private val userPreference: UserPreference
             userPreference: UserPreference
         ): UserRepository =
             instance ?: synchronized(this) {
-                instance ?: UserRepository(userPreference)
+                instance ?: UserRepository(userPreference, ApiConfig.getApiService())
             }.also { instance = it }
     }
-
 
 }

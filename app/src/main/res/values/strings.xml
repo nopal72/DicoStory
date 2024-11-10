@@ -10,4 +10,12 @@
     <string name="text_signup">belum punya akun? <b>signup</b></string>
     <string name="type_password">masukkan password</string>
     <string name="error_password">password harus lebih dari 8 karakter!</string>
+    <string name="text_registration">lengkapi data dirimu</string>
+    <string name="register">register</string>
+    <string name="text_verify_password">verifikasi password</string>
+    <string name="text_login">sudah punya akun? <b>login</b></string>
+    <string name="name">nama</string>
+    <string name="registration_successful">registrasi successful</string>
+    <string name="registration_failed">registration failed</string>
+    <string name="password_mismatch">password mismatch</string>
 </resources>

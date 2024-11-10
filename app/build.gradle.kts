@@ -14,6 +14,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        buildConfigField("String", "BASE_URL", "\"https://story-api.dicoding.dev/v1/\"")
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -58,4 +60,10 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.ktx.v261)
     implementation(libs.androidx.lifecycle.livedata.ktx.v261)
     implementation(libs.androidx.activity.ktx)
+
+    implementation(libs.retrofit)
+    implementation(libs.retrofit2.converter.gson)
+    implementation(libs.logging.interceptor)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.converter.gson.v230)
 }
