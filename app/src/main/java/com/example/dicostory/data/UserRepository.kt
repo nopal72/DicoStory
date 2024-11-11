@@ -2,12 +2,13 @@ package com.example.dicostory.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.dicostory.data.api.ApiConfig
-import com.example.dicostory.data.api.ApiService
-import com.example.dicostory.data.api.LoginResponse
+import com.example.dicostory.data.remote.api.ApiConfig
+import com.example.dicostory.data.remote.api.ApiService
+import com.example.dicostory.data.remote.response.LoginResponse
 import com.example.dicostory.data.pref.LoginRequest
 import com.example.dicostory.data.pref.UserModel
 import com.example.dicostory.data.pref.UserPreference
+import com.example.dicostory.data.remote.response.StoryResponse
 import com.example.dicostory.utils.AppExecutors
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -17,7 +18,7 @@ import retrofit2.Call
 import retrofit2.Callback
 
 class UserRepository private constructor(
-private val userPreference: UserPreference, private val apiService: ApiService, private val appExecutors: AppExecutors
+    private val userPreference: UserPreference, private val apiService: ApiService, private val appExecutors: AppExecutors
 ){
 
     suspend fun saveSession(user: UserModel){
@@ -62,6 +63,36 @@ private val userPreference: UserPreference, private val apiService: ApiService, 
 
     suspend fun logout(){
         userPreference.logout()
+    }
+
+    fun getStories(): LiveData<Result<StoryResponse>> {
+        val result = MutableLiveData<Result<StoryResponse>>()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            userPreference.getSession().collect { user ->
+                val client = apiService.getStories("Bearer ${user.token}")
+                client.enqueue(object : Callback<StoryResponse> {
+                    override fun onResponse(
+                        call: Call<StoryResponse>,
+                        response: retrofit2.Response<StoryResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            val responseBody = response.body()
+                            responseBody?.let {
+                                result.value = Result.success(it)
+                            }
+                        }
+                        else {
+                            result.value = Result.failure(Exception("Error: ${response.code()}"))
+                        }
+                }
+                    override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
+                        result.value = Result.failure(t)
+                    }
+                })
+            }
+        }
+        return result
     }
 
     companion object {

@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.dicostory.data.UserRepository
-import com.example.dicostory.data.api.LoginResponse
+import com.example.dicostory.data.remote.response.LoginResponse
 import com.example.dicostory.data.pref.LoginRequest
 
 class LoginViewModel(private val repository: UserRepository) : ViewModel() {

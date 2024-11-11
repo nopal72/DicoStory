@@ -1,4 +1,4 @@
-package com.example.dicostory.data.api
+package com.example.dicostory.data.remote.response
 
 import com.google.gson.annotations.SerializedName
 

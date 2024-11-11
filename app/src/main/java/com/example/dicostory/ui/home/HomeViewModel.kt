@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.example.dicostory.data.UserRepository
 import com.example.dicostory.data.pref.UserModel
+import com.example.dicostory.data.remote.response.StoryResponse
 
 class HomeViewModel(private val repository: UserRepository) : ViewModel() {
 
@@ -13,4 +14,6 @@ class HomeViewModel(private val repository: UserRepository) : ViewModel() {
         return repository.getSession().asLiveData()
     }
 
+
+    val stories: LiveData<Result<StoryResponse>> = repository.getStories()
 }

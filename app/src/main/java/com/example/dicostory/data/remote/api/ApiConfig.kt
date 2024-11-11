@@ -1,4 +1,4 @@
-package com.example.dicostory.data.api
+package com.example.dicostory.data.remote.api
 
 import com.example.dicostory.BuildConfig
 import okhttp3.OkHttpClient

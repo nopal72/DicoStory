@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.dicostory.data.api.ApiConfig
-import com.example.dicostory.data.api.RegisterResponse
+import com.example.dicostory.data.remote.api.ApiConfig
+import com.example.dicostory.data.remote.response.RegisterResponse
 import com.example.dicostory.data.pref.RegisterRequest
 
 class RegisterViewModel : ViewModel() {
