@@ -18,4 +18,8 @@
     <string name="registration_successful">registrasi successful</string>
     <string name="registration_failed">registration failed</string>
     <string name="password_mismatch">password mismatch</string>
+    <string name="image_story">image story</string>
+    <string name="text_name">name</string>
+    <string name="text_description">description</string>
+    <string name="text_date">tanggal</string>
 </resources>
