@@ -53,7 +53,7 @@ private val userPreference: UserPreference, private val apiService: ApiService, 
                 }
             }
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                TODO("Not yet implemented")
+                result.value = Result.failure(t)
             }
         })
 

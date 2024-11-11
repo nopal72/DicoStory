@@ -7,7 +7,7 @@ import com.example.dicostory.MainActivity
 import com.example.dicostory.data.UserRepository
 import com.example.dicostory.di.Injection
 import com.example.dicostory.ui.home.HomeViewModel
-import com.example.dicostory.ui.signup.RegisterViewModel
+import com.example.dicostory.ui.login.LoginViewModel
 
 class ViewModelFactory(private val repository: UserRepository) : ViewModelProvider.NewInstanceFactory() {
 
@@ -16,6 +16,9 @@ class ViewModelFactory(private val repository: UserRepository) : ViewModelProvid
         return when {
             modelClass.isAssignableFrom(HomeViewModel::class.java) -> {
                 HomeViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(LoginViewModel::class.java) -> {
+                LoginViewModel(repository) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

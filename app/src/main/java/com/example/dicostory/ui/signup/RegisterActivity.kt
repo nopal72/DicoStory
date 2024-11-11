@@ -6,11 +6,8 @@ import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.dicostory.R
 import com.example.dicostory.data.pref.RegisterRequest
-import com.example.dicostory.data.pref.User
 import com.example.dicostory.databinding.ActivityRegisterBinding
 import com.example.dicostory.ui.login.LoginActivity
 

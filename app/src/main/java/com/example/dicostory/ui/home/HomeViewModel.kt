@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.example.dicostory.data.UserRepository
-import com.example.dicostory.data.pref.User.UserModel
+import com.example.dicostory.data.pref.UserModel
 
 class HomeViewModel(private val repository: UserRepository) : ViewModel() {
 
