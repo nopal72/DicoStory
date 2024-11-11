@@ -22,4 +22,5 @@
     <string name="text_name">name</string>
     <string name="text_description">description</string>
     <string name="text_date">tanggal</string>
+    <string name="text_share_story">share your stories</string>
 </resources>
