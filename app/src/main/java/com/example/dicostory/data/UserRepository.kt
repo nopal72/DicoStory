@@ -8,6 +8,7 @@ import com.example.dicostory.data.remote.response.LoginResponse
 import com.example.dicostory.data.pref.LoginRequest
 import com.example.dicostory.data.pref.UserModel
 import com.example.dicostory.data.pref.UserPreference
+import com.example.dicostory.data.remote.response.DetailResponse
 import com.example.dicostory.data.remote.response.StoryResponse
 import com.example.dicostory.utils.AppExecutors
 import kotlinx.coroutines.CoroutineScope
@@ -49,12 +50,12 @@ class UserRepository private constructor(
                         CoroutineScope(Dispatchers.IO).launch {
                             userPreference.saveSession(user)
                         }
-                        result.value = Result.success(it)
+                        result.value = Result.Success(it)
                     }
                 }
             }
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                result.value = Result.failure(t)
+                result.value = Result.Error(t.toString())
             }
         })
 
@@ -79,21 +80,53 @@ class UserRepository private constructor(
                         if (response.isSuccessful) {
                             val responseBody = response.body()
                             responseBody?.let {
-                                result.value = Result.success(it)
+                                result.value = Result.Success(it)
                             }
-                        }
-                        else {
-                            result.value = Result.failure(Exception("Error: ${response.code()}"))
                         }
                 }
                     override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
-                        result.value = Result.failure(t)
+                        result.value = Result.Error(t.toString())
                     }
                 })
             }
         }
         return result
     }
+
+
+    fun getDetailStory(id: String): LiveData<Result<DetailResponse>> {
+        val result = MutableLiveData<Result<DetailResponse>>()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            userPreference.getSession().collect { user ->
+                val client = apiService.getDetailStory("Bearer ${user.token}", id)
+                client.enqueue(object : Callback<DetailResponse> {
+                    override fun onResponse(
+                        call: Call<DetailResponse>,
+                        response: retrofit2.Response<DetailResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            val responseBody = response.body()
+                            responseBody?.let {
+                                result.postValue(Result.Success(it))
+                            } ?: run {
+                                result.postValue(Result.Error(Exception("Empty response body").toString()))
+                            }
+                        } else {
+                            result.postValue(Result.Error(Exception("Error: ${response.code()} ${response.message()}").toString()))
+                        }
+                    }
+
+                    override fun onFailure(call: Call<DetailResponse>, t: Throwable) {
+                        result.postValue(Result.Error(t.toString()))
+                    }
+                })
+            }
+        }
+
+        return result
+    }
+
 
     companion object {
         @Volatile
