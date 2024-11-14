@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.example.dicostory.data.UserRepository
 import com.example.dicostory.data.remote.response.LoginResponse
 import com.example.dicostory.data.pref.LoginRequest
+import com.example.dicostory.data.Result
 
 class LoginViewModel(private val repository: UserRepository) : ViewModel() {
     private val _loginResult = MutableLiveData<Result<LoginResponse>>()

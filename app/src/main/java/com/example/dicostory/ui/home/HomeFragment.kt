@@ -6,16 +6,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityCompat.finishAffinity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.dicostory.R
 import com.example.dicostory.data.remote.response.StoryResponse
 import com.example.dicostory.databinding.FragmentHomeBinding
 import com.example.dicostory.ui.ViewModelFactory
 import com.example.dicostory.ui.login.LoginActivity
+import com.example.dicostory.data.Result
+import com.example.dicostory.data.remote.response.ListStoryItem
+import com.example.dicostory.ui.detail.DetailFragment
+import com.google.android.material.snackbar.Snackbar
 
 class HomeFragment : Fragment() {
 
@@ -47,20 +53,44 @@ class HomeFragment : Fragment() {
         }
 
         viewModel.stories.observe(viewLifecycleOwner) { result ->
-            setStoryData(result)
+            when (result) {
+                is Result.Loading ->{
+                    binding.progressBar.visibility = View.VISIBLE
+                }
+                is Result.Success ->{
+                    binding.progressBar.visibility = View.GONE
+                    val story = result.data.listStory
+                    setStoryData(story)
+                }
+                is Result.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    Snackbar.make(
+                        binding.root,
+                        "Terjadi kesalahan" + result.error,
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            }
         }
 
         return binding.root
     }
 
-    private fun setStoryData(result: Result<StoryResponse>?): Result<StoryResponse>? {
-        val stories = result?.getOrNull()?.listStory
-        if (stories != null) {
-            adapter = StoryAdapter()
-            adapter.submitList(stories)
-            binding.rvStory.adapter = adapter
+    private fun setStoryData(story: List<ListStoryItem>) {
+        adapter = StoryAdapter{ storyId ->
+            val bundle = Bundle()
+            bundle.putString("story_id",storyId)
+
+            val transaction = activity?.supportFragmentManager?.beginTransaction()
+            val detailFragment = DetailFragment()
+            detailFragment.arguments = bundle
+            transaction?.replace(R.id.nav_host_fragment_activity_main, detailFragment)
+            transaction?.addToBackStack(null)
+            transaction?.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            transaction?.commit()
         }
-        return result
+        adapter.submitList(story)
+        binding.rvStory.adapter = adapter
     }
 
     override fun onDestroyView() {

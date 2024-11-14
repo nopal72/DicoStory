@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">DicoStory</string>
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
     <string name="tag_line">Di Setiap Cerita Ada Makna, dan di Setiap Makna Ada Keberanian untuk Berbagi</string>
     <string name="email">Email</string>
     <string name="password">password</string>
@@ -23,4 +21,6 @@
     <string name="text_description">description</string>
     <string name="text_date">tanggal</string>
     <string name="text_share_story">share your stories</string>
+    <string name="title_post">Post</string>
+    <string name="title_setting">Setting</string>
 </resources>

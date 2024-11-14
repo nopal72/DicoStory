@@ -1,7 +1,5 @@
 package com.example.dicostory.data.remote.response
 
-import kotlinx.parcelize.Parcelize
-import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 data class DetailResponse(

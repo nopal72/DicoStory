@@ -11,7 +11,6 @@ import com.example.dicostory.databinding.FragmentDetailBinding
 import com.example.dicostory.ui.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
 import com.example.dicostory.data.Result
-import com.example.dicostory.data.remote.response.DetailResponse
 import com.example.dicostory.data.remote.response.Story
 
 class DetailFragment : Fragment() {

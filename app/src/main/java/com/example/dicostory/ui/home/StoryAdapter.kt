@@ -14,12 +14,10 @@ import com.example.dicostory.ui.detail.DetailFragment
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class StoryAdapter: ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_CALLBACK) {
+class StoryAdapter(private val onItemClick: (String) -> Unit) : ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     class MyViewHolder(val binding: ItemStoryCardBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(story: ListStoryItem){
-
-//            set date format
+        fun bind(story: ListStoryItem, onItemClick: (String) -> Unit) {
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
             val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val date = inputFormat.parse(story.createdAt)
@@ -32,11 +30,7 @@ class StoryAdapter: ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_C
                 .into(binding.ivStory)
 
             itemView.setOnClickListener {
-                val intentDetail = Intent(itemView.context, DetailFragment::class.java)
-                val bundle = Bundle()
-                bundle.putString("id_story", story.id.toString())
-                intentDetail.putExtras(bundle)
-                itemView.context.startActivity(intentDetail)
+                onItemClick(story.id)
             }
         }
     }
@@ -48,19 +42,16 @@ class StoryAdapter: ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_C
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val story = getItem(position)
-        holder.bind(story)
+        holder.bind(story, onItemClick)
     }
 
     companion object {
         val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ListStoryItem>() {
-            override fun areContentsTheSame(
-                oldItem: ListStoryItem,
-                newItem: ListStoryItem
-            ): Boolean {
+            override fun areContentsTheSame(oldItem: ListStoryItem, newItem: ListStoryItem): Boolean {
                 return oldItem == newItem
             }
             override fun areItemsTheSame(oldItem: ListStoryItem, newItem: ListStoryItem): Boolean {
-                return oldItem == newItem
+                return oldItem.id == newItem.id
             }
         }
     }

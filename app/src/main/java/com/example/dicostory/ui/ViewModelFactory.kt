@@ -3,9 +3,10 @@ package com.example.dicostory.ui
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.dicostory.MainActivity
 import com.example.dicostory.data.UserRepository
 import com.example.dicostory.di.Injection
+import com.example.dicostory.ui.detail.DetailFragment
+import com.example.dicostory.ui.detail.DetailViewModel
 import com.example.dicostory.ui.home.HomeViewModel
 import com.example.dicostory.ui.login.LoginViewModel
 
@@ -19,6 +20,9 @@ class ViewModelFactory(private val repository: UserRepository) : ViewModelProvid
             }
             modelClass.isAssignableFrom(LoginViewModel::class.java) -> {
                 LoginViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(DetailViewModel::class.java) -> {
+                DetailViewModel(repository) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
