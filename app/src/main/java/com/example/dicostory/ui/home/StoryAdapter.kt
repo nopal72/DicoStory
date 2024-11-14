@@ -10,14 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.dicostory.data.remote.response.ListStoryItem
 import com.example.dicostory.databinding.ItemStoryCardBinding
-import com.example.dicostory.ui.detail.DetailFragment
+import com.example.dicostory.ui.detail.DetailActivity
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class StoryAdapter(private val onItemClick: (String) -> Unit) : ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_CALLBACK) {
+class StoryAdapter: ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     class MyViewHolder(val binding: ItemStoryCardBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(story: ListStoryItem, onItemClick: (String) -> Unit) {
+        fun bind(story: ListStoryItem){
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
             val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val date = inputFormat.parse(story.createdAt)
@@ -30,7 +30,11 @@ class StoryAdapter(private val onItemClick: (String) -> Unit) : ListAdapter<List
                 .into(binding.ivStory)
 
             itemView.setOnClickListener {
-                onItemClick(story.id)
+                val intentDetail = Intent(itemView.context, DetailActivity::class.java)
+                val bundle = Bundle()
+                bundle.putString("story_id", story.id)
+                intentDetail.putExtras(bundle)
+                itemView.context.startActivity(intentDetail)
             }
         }
     }
@@ -42,7 +46,7 @@ class StoryAdapter(private val onItemClick: (String) -> Unit) : ListAdapter<List
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val story = getItem(position)
-        holder.bind(story, onItemClick)
+        holder.bind(story)
     }
 
     companion object {

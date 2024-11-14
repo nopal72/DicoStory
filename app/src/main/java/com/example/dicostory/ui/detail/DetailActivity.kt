@@ -1,30 +1,29 @@
 package com.example.dicostory.ui.detail
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.example.dicostory.databinding.FragmentDetailBinding
-import com.example.dicostory.ui.ViewModelFactory
-import com.google.android.material.snackbar.Snackbar
 import com.example.dicostory.data.Result
 import com.example.dicostory.data.remote.response.Story
+import com.example.dicostory.databinding.ActivityDetailBinding
+import com.example.dicostory.ui.ViewModelFactory
+import com.google.android.material.snackbar.Snackbar
 
-class DetailFragment : Fragment() {
+class DetailActivity : AppCompatActivity() {
 
-    private lateinit var binding: FragmentDetailBinding
-    private val viewModel: DetailViewModel by viewModels{
-        ViewModelFactory.getInstance(requireContext())
+    private lateinit var binding: ActivityDetailBinding
+    private val viewModel: DetailViewModel by viewModels {
+        ViewModelFactory.getInstance(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = FragmentDetailBinding.inflate(layoutInflater)
+        binding = ActivityDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val bundle = arguments
+        val bundle = intent.extras
         if (bundle != null) {
             val storyId = bundle.getString("story_id")
             storyId?.let {
@@ -60,13 +59,4 @@ class DetailFragment : Fragment() {
         binding.tvName.text = story.name
         binding.tvDescription.text = story.description
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
-    ): View {
-        binding = FragmentDetailBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
 }

@@ -20,7 +20,6 @@ import com.example.dicostory.ui.ViewModelFactory
 import com.example.dicostory.ui.login.LoginActivity
 import com.example.dicostory.data.Result
 import com.example.dicostory.data.remote.response.ListStoryItem
-import com.example.dicostory.ui.detail.DetailFragment
 import com.google.android.material.snackbar.Snackbar
 
 class HomeFragment : Fragment() {
@@ -77,18 +76,7 @@ class HomeFragment : Fragment() {
     }
 
     private fun setStoryData(story: List<ListStoryItem>) {
-        adapter = StoryAdapter{ storyId ->
-            val bundle = Bundle()
-            bundle.putString("story_id",storyId)
-
-            val transaction = activity?.supportFragmentManager?.beginTransaction()
-            val detailFragment = DetailFragment()
-            detailFragment.arguments = bundle
-            transaction?.replace(R.id.nav_host_fragment_activity_main, detailFragment)
-            transaction?.addToBackStack(null)
-            transaction?.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-            transaction?.commit()
-        }
+        adapter = StoryAdapter()
         adapter.submitList(story)
         binding.rvStory.adapter = adapter
     }
