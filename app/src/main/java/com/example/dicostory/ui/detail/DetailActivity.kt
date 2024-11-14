@@ -10,6 +10,8 @@ import com.example.dicostory.data.remote.response.Story
 import com.example.dicostory.databinding.ActivityDetailBinding
 import com.example.dicostory.ui.ViewModelFactory
 import com.google.android.material.snackbar.Snackbar
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class DetailActivity : AppCompatActivity() {
 
@@ -52,10 +54,14 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun displayEventDetail(story: Story) {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = inputFormat.parse(story.createdAt)
+
         Glide.with(this)
             .load(story.photoUrl)
             .into(binding.ivDetail)
-
+        binding.tvDate.text = date?.let { outputFormat.format(it) }
         binding.tvName.text = story.name
         binding.tvDescription.text = story.description
     }

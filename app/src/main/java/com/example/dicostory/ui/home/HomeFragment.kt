@@ -72,6 +72,10 @@ class HomeFragment : Fragment() {
             }
         }
 
+        binding.btnToPost.setOnClickListener{
+            findNavController().navigate(R.id.action_navigation_home_to_navigation_post)
+        }
+
         return binding.root
     }
 
