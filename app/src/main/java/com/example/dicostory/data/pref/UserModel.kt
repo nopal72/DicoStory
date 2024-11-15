@@ -1,7 +1,8 @@
 package com.example.dicostory.data.pref
 
 data class UserModel(
-    val email: String,
+    val id: String,
+    val name: String,
     val token: String,
     val isLogin: Boolean = false
 )

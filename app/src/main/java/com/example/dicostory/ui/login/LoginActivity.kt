@@ -2,16 +2,19 @@ package com.example.dicostory.ui.login
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.example.dicostory.MainActivity
+import com.example.dicostory.mainActivity.MainActivity
 import com.example.dicostory.R
 import com.example.dicostory.databinding.ActivityLoginBinding
 import com.example.dicostory.ui.ViewModelFactory
 import com.example.dicostory.ui.signup.RegisterActivity
+import com.example.dicostory.data.Result
+import com.google.android.material.snackbar.Snackbar
 
 class LoginActivity : AppCompatActivity() {
 
@@ -38,9 +41,23 @@ class LoginActivity : AppCompatActivity() {
             val password = binding.edLoginPassword.text.toString()
             viewModel.login(email, password)
             viewModel.loginResult.observe(this) { result ->
-                if (result != null) {
-                    startActivity(Intent(this, MainActivity::class.java))
-                    finish()
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        startActivity(Intent(this, MainActivity::class.java))
+                        finish()
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Snackbar.make(
+                            binding.root,
+                            "Terjadi kesalahan" + result.error,
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
         }

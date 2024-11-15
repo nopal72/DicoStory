@@ -2,19 +2,25 @@ package com.example.dicostory.ui.signup
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.example.dicostory.R
+import com.example.dicostory.data.Result
 import com.example.dicostory.data.pref.RegisterRequest
 import com.example.dicostory.databinding.ActivityRegisterBinding
+import com.example.dicostory.ui.ViewModelFactory
 import com.example.dicostory.ui.login.LoginActivity
+import com.google.android.material.snackbar.Snackbar
 
 class RegisterActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityRegisterBinding
-    private val registerViewModel: RegisterViewModel by viewModels()
+    private val registerViewModel: RegisterViewModel by viewModels {
+        ViewModelFactory.getInstance(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,16 +28,6 @@ class RegisterActivity : AppCompatActivity() {
 
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        registerViewModel.registerResult.observe(this) { result ->
-            if (result != null && !result.error) {
-                startActivity(Intent(this, LoginActivity::class.java))
-                showToast(getString(R.string.registration_successful))
-                finish()
-            } else {
-                showToast(getString(R.string.registration_failed))
-            }
-        }
 
         binding.btnLogin.setOnClickListener {
             val name = binding.edRegisterName.text.toString()
@@ -41,9 +37,33 @@ class RegisterActivity : AppCompatActivity() {
 
             if (password == verifyPassword) {
                 val request = RegisterRequest(name, email, password)
-                registerViewModel.registerUser(request)
+                registerViewModel.register(request)
             } else {
                 showToast(getString(R.string.password_mismatch))
+            }
+
+            val request = RegisterRequest(name, email, password)
+
+            registerViewModel.register(request).observe(this) { result ->
+                when (result) {
+                    is Result.Loading -> {
+                        binding.progressBar.visibility = View.VISIBLE
+                    }
+                    is Result.Success -> {
+                        binding.progressBar.visibility = View.GONE
+                        startActivity(Intent(this, LoginActivity::class.java))
+                        showToast(getString(R.string.registration_successful))
+                        finish()
+                    }
+                    is Result.Error -> {
+                        binding.progressBar.visibility = View.GONE
+                        Snackbar.make(
+                            binding.root,
+                            "Terjadi kesalahan" + result.error,
+                            Snackbar.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
         }
 
@@ -51,11 +71,6 @@ class RegisterActivity : AppCompatActivity() {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
-        registerViewModel.errorMessage.observe(this) { message ->
-            if (message != null) {
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 
 

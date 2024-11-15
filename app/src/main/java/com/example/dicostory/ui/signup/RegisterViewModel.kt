@@ -1,47 +1,12 @@
 package com.example.dicostory.ui.signup
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.dicostory.data.remote.api.ApiConfig
+import com.example.dicostory.data.Result
+import com.example.dicostory.data.UserRepository
 import com.example.dicostory.data.remote.response.RegisterResponse
 import com.example.dicostory.data.pref.RegisterRequest
 
-class RegisterViewModel : ViewModel() {
-
-    private val _registerResult = MutableLiveData<RegisterResponse>()
-    val registerResult: LiveData<RegisterResponse> = _registerResult
-
-    private val _isLoading = MutableLiveData<Boolean>()
-    val isLoading: LiveData<Boolean> = _isLoading
-
-    private val _errorMessage = MutableLiveData<String>()
-    val errorMessage: LiveData<String> = _errorMessage
-
-
-    fun registerUser(request: RegisterRequest) {
-        _isLoading.value = true
-        val client = ApiConfig.getApiService().registerUser(request)
-        client.enqueue(object : retrofit2.Callback<RegisterResponse> {
-            override fun onResponse(
-                call: retrofit2.Call<RegisterResponse>,
-                response: retrofit2.Response<RegisterResponse>
-            ) {
-                if (response.isSuccessful) {
-                    _registerResult.value = response.body()
-                    _isLoading.value = false
-                    Log.d("RegisterViewModel", "onResponse: ${response.body()}")
-                } else {
-                    _errorMessage.value = response.message()
-                    Log.e("RegisterViewModel", "onFailure: ${response.message()}")
-                }
-            }
-            override fun onFailure(call: retrofit2.Call<RegisterResponse>, t: Throwable) {
-                _isLoading.value = false
-                _errorMessage.value = t.message
-                Log.e("RegisterViewModel", "onFailure: ${t.message.toString()}")
-            }
-        })
-    }
+class RegisterViewModel(private val userRepository: UserRepository) : ViewModel() {
+    fun register(request: RegisterRequest): LiveData<Result<RegisterResponse>> = userRepository.register(request)
 }

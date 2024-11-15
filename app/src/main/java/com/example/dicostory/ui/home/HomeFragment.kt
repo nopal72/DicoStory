@@ -5,19 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.ActivityCompat.finishAffinity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dicostory.R
-import com.example.dicostory.data.remote.response.StoryResponse
 import com.example.dicostory.databinding.FragmentHomeBinding
 import com.example.dicostory.ui.ViewModelFactory
-import com.example.dicostory.ui.login.LoginActivity
 import com.example.dicostory.data.Result
 import com.example.dicostory.data.remote.response.ListStoryItem
 import com.google.android.material.snackbar.Snackbar
@@ -43,13 +38,6 @@ class HomeFragment : Fragment() {
 
         binding.rvStory.layoutManager = LinearLayoutManager(requireContext())
         binding.rvStory.addItemDecoration(itemDecoration)
-
-        viewModel.getSession().observe(viewLifecycleOwner) {
-            if (!it.isLogin) {
-                startActivity(Intent(requireContext(), LoginActivity::class.java))
-                finishAffinity(requireActivity())
-            }
-        }
 
         viewModel.stories.observe(viewLifecycleOwner) { result ->
             when (result) {
