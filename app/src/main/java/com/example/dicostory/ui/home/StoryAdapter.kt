@@ -16,7 +16,7 @@ import java.util.Locale
 
 class StoryAdapter: ListAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
-    class MyViewHolder(val binding: ItemStoryCardBinding) : RecyclerView.ViewHolder(binding.root) {
+    class MyViewHolder(private val binding: ItemStoryCardBinding) : RecyclerView.ViewHolder(binding.root) {
         fun bind(story: ListStoryItem){
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
             val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())

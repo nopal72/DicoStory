@@ -1,5 +1,7 @@
 package com.example.dicostory.data.pref
 
+import okhttp3.MultipartBody
+
 data class UserModel(
     val id: String,
     val name: String,
@@ -18,3 +20,9 @@ data class LoginRequest(
     val password: String
 )
 
+data class AddNewStoryRequest(
+    val description: String,
+    val photo: MultipartBody.Part,
+    val lat: Double,
+    val lon: Double
+)

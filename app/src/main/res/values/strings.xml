@@ -24,4 +24,8 @@
     <string name="title_post">Post</string>
     <string name="title_setting">Setting</string>
     <string name="text_logout">logout</string>
+    <string name="description">description</string>
+    <string name="title_gallery">gallery</string>
+    <string name="button_gallery">button gallery</string>
+    <string name="button_camera">button camera</string>
 </resources>

@@ -1,8 +1,8 @@
 package com.example.dicostory.data
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.example.dicostory.data.pref.AddNewStoryRequest
 import com.example.dicostory.data.remote.api.ApiConfig
 import com.example.dicostory.data.remote.api.ApiService
 import com.example.dicostory.data.remote.response.LoginResponse
@@ -10,6 +10,7 @@ import com.example.dicostory.data.pref.LoginRequest
 import com.example.dicostory.data.pref.RegisterRequest
 import com.example.dicostory.data.pref.UserModel
 import com.example.dicostory.data.pref.UserPreference
+import com.example.dicostory.data.remote.response.AddNewStoryResponse
 import com.example.dicostory.data.remote.response.DetailResponse
 import com.example.dicostory.data.remote.response.RegisterResponse
 import com.example.dicostory.data.remote.response.StoryResponse
@@ -18,15 +19,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.io.File
 
 class UserRepository private constructor(
     private val userPreference: UserPreference, private val apiService: ApiService, private val appExecutors: AppExecutors
-){
+) {
 
-    suspend fun saveSession(user: UserModel){
+    suspend fun saveSession(user: UserModel) {
         userPreference.saveSession(user)
     }
 
@@ -38,7 +44,7 @@ class UserRepository private constructor(
         val result = MutableLiveData<Result<LoginResponse>>()
         result.value = Result.Loading
         val client = apiService.loginUser(request)
-        client.enqueue(object : Callback<LoginResponse>{
+        client.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(
                 call: Call<LoginResponse>,
                 response: Response<LoginResponse>
@@ -60,6 +66,7 @@ class UserRepository private constructor(
                     }
                 }
             }
+
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 result.value = Result.Error(t.toString())
             }
@@ -72,7 +79,7 @@ class UserRepository private constructor(
         val result = MutableLiveData<Result<RegisterResponse>>()
         result.value = Result.Loading
         val client = apiService.registerUser(request)
-        client.enqueue(object : Callback<RegisterResponse>{
+        client.enqueue(object : Callback<RegisterResponse> {
             override fun onResponse(
                 call: Call<RegisterResponse>,
                 response: Response<RegisterResponse>
@@ -80,7 +87,7 @@ class UserRepository private constructor(
                 if (response.isSuccessful) {
                     val body = response.body()
                     body?.let {
-                        if(!it.error){
+                        if (!it.error) {
                             result.postValue(Result.Error(body.message))
                         } else {
                             result.postValue(Result.Success(it))
@@ -99,8 +106,7 @@ class UserRepository private constructor(
         return result
     }
 
-    suspend fun logout(){
-        Log.d("UserRepository", "Logout called====================================================")
+    suspend fun logout() {
         userPreference.logout()
     }
 
@@ -113,7 +119,7 @@ class UserRepository private constructor(
                 client.enqueue(object : Callback<StoryResponse> {
                     override fun onResponse(
                         call: Call<StoryResponse>,
-                        response: retrofit2.Response<StoryResponse>
+                        response: Response<StoryResponse>
                     ) {
                         if (response.isSuccessful) {
                             val responseBody = response.body()
@@ -121,8 +127,44 @@ class UserRepository private constructor(
                                 result.value = Result.Success(it)
                             }
                         }
-                }
+                    }
+
                     override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
+                        result.value = Result.Error(t.toString())
+                    }
+                })
+            }
+        }
+        return result
+    }
+
+    fun uploadStory(imageFile: File, description: String): LiveData<Result<AddNewStoryResponse>> {
+        val result = MutableLiveData<Result<AddNewStoryResponse>>()
+        result.value = Result.Loading
+        val requestBody =description.toRequestBody("text/plain".toMediaType())
+        val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
+        val multipartBody = MultipartBody.Part.createFormData(
+            "photo",
+            imageFile.name,
+            requestImageFile
+        )
+        CoroutineScope(Dispatchers.IO).launch {
+            userPreference.getSession().collect { user ->
+                val client = apiService.addNewStory(multipartBody, requestBody, "Bearer ${user.token}")
+                client.enqueue(object : Callback<AddNewStoryResponse> {
+                    override fun onResponse(
+                        call: Call<AddNewStoryResponse>,
+                        response: Response<AddNewStoryResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            val responseBody = response.body()
+                            responseBody?.let {
+                                result.value = Result.Success(it)
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<AddNewStoryResponse>, t: Throwable) {
                         result.value = Result.Error(t.toString())
                     }
                 })
@@ -140,7 +182,7 @@ class UserRepository private constructor(
                 client.enqueue(object : Callback<DetailResponse> {
                     override fun onResponse(
                         call: Call<DetailResponse>,
-                        response: retrofit2.Response<DetailResponse>
+                        response: Response<DetailResponse>
                     ) {
                         if (response.isSuccessful) {
                             val responseBody = response.body()
@@ -150,7 +192,9 @@ class UserRepository private constructor(
                                 result.postValue(Result.Error(Exception("Empty response body").toString()))
                             }
                         } else {
-                            result.postValue(Result.Error(Exception("Error: ${response.code()} ${response.message()}").toString()))
+                            result.postValue(
+                                Result.Error(Exception("Error: ${response.code()} ${response.message()}").toString())
+                            )
                         }
                     }
 
@@ -164,7 +208,6 @@ class UserRepository private constructor(
         return result
     }
 
-
     companion object {
         @Volatile
         private var instance: UserRepository? = null
@@ -175,5 +218,4 @@ class UserRepository private constructor(
                 instance ?: UserRepository(userPreference, ApiConfig.getApiService(), AppExecutors())
             }.also { instance = it }
     }
-
 }
