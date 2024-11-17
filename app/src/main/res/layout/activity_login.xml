@@ -35,6 +35,18 @@
         app:layout_constraintBottom_toTopOf="@+id/tagLine"/>
 
     <TextView
+        android:id="@+id/error_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/error_message"
+        android:textStyle="bold"
+        android:textColor="@color/red"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/tagLine"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
         android:id="@+id/tagLine"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,7 +83,7 @@
         app:layout_constraintBottom_toTopOf="@id/guideline"
         app:startIconDrawable="@drawable/ic_email">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.example.dicostory.ui.myComponent.MyEditEmailText
             android:id="@+id/ed_login_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -101,7 +113,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.example.dicostory.ui.myComponent.MyEditText
             android:id="@+id/ed_login_password"
             android:layout_width="match_parent"
             android:ems="10"

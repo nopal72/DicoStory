@@ -1,9 +1,8 @@
 package com.example.dicostory.data.remote.api
 
-import com.example.dicostory.data.pref.AddNewStoryRequest
 import com.example.dicostory.data.pref.LoginRequest
 import com.example.dicostory.data.pref.RegisterRequest
-import com.example.dicostory.data.remote.response.AddNewStoryResponse
+import com.example.dicostory.data.remote.response.UploadStoryResponse
 import com.example.dicostory.data.remote.response.DetailResponse
 import com.example.dicostory.data.remote.response.LoginResponse
 import com.example.dicostory.data.remote.response.RegisterResponse
@@ -51,5 +50,5 @@ interface ApiService {
         @Part file: MultipartBody.Part,
         @Part("description")description:RequestBody,
         @Header("Authorization") token: String
-    ): Call<AddNewStoryResponse>
+    ): Call<UploadStoryResponse>
 }

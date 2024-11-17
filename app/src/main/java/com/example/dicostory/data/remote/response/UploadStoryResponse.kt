@@ -5,7 +5,7 @@ import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 
 @Parcelize
-data class AddNewStoryResponse(
+data class UploadStoryResponse(
 
 	@field:SerializedName("error")
 	val error: Boolean,

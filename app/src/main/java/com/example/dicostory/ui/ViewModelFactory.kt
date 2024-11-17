@@ -11,6 +11,7 @@ import com.example.dicostory.ui.home.HomeViewModel
 import com.example.dicostory.ui.login.LoginViewModel
 import com.example.dicostory.ui.post.PostViewModel
 import com.example.dicostory.ui.setting.SettingViewModel
+import com.example.dicostory.ui.signup.RegisterViewModel
 
 class ViewModelFactory(private val repository: UserRepository) : ViewModelProvider.NewInstanceFactory() {
 
@@ -34,6 +35,9 @@ class ViewModelFactory(private val repository: UserRepository) : ViewModelProvid
             }
             modelClass.isAssignableFrom(PostViewModel::class.java) -> {
                 PostViewModel(repository) as T
+            }
+            modelClass.isAssignableFrom(RegisterViewModel::class.java) -> {
+                RegisterViewModel(repository) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }

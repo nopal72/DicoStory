@@ -2,7 +2,6 @@ package com.example.dicostory.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.dicostory.data.pref.AddNewStoryRequest
 import com.example.dicostory.data.remote.api.ApiConfig
 import com.example.dicostory.data.remote.api.ApiService
 import com.example.dicostory.data.remote.response.LoginResponse
@@ -10,11 +9,12 @@ import com.example.dicostory.data.pref.LoginRequest
 import com.example.dicostory.data.pref.RegisterRequest
 import com.example.dicostory.data.pref.UserModel
 import com.example.dicostory.data.pref.UserPreference
-import com.example.dicostory.data.remote.response.AddNewStoryResponse
+import com.example.dicostory.data.remote.response.UploadStoryResponse
 import com.example.dicostory.data.remote.response.DetailResponse
 import com.example.dicostory.data.remote.response.RegisterResponse
 import com.example.dicostory.data.remote.response.StoryResponse
 import com.example.dicostory.utils.AppExecutors
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -53,16 +53,27 @@ class UserRepository private constructor(
                     val responseBody = response.body()
 
                     responseBody?.let {
-                        val user = UserModel(
-                            it.loginResult.name,
-                            it.loginResult.userId,
-                            it.loginResult.token,
-                            true
-                        )
-                        CoroutineScope(Dispatchers.IO).launch {
-                            userPreference.saveSession(user)
+                        if(!it.error){
+                            val user = UserModel(
+                                it.loginResult.name,
+                                it.loginResult.userId,
+                                it.loginResult.token,
+                                true
+                            )
+                            CoroutineScope(Dispatchers.IO).launch {
+                                userPreference.saveSession(user)
+                            }
+                            result.value = Result.Success(it)
+                        } else {
+                            result.value = Result.Error(it.message)
                         }
-                        result.value = Result.Success(it)
+                    }
+                }
+                else{
+                    val errorBody = response.errorBody()?.string()
+                    errorBody?.let {
+                        val errorResponse = Gson().fromJson(it, LoginResponse::class.java)
+                        result.value = Result.Error(errorResponse.message)
                     }
                 }
             }
@@ -88,18 +99,22 @@ class UserRepository private constructor(
                     val body = response.body()
                     body?.let {
                         if (!it.error) {
-                            result.postValue(Result.Error(body.message))
+                            result.value = Result.Success(it)
                         } else {
-                            result.postValue(Result.Success(it))
+                            result.value = Result.Error(body.message)
                         }
                     }
                 } else {
-                    result.postValue(Result.Error(response.message()))
+                    val errorBody = response.errorBody()?.string()
+                    errorBody?.let {
+                        val errorResponse = Gson().fromJson(it, RegisterResponse::class.java)
+                        result.value = Result.Error(errorResponse.message)
+                    }
                 }
             }
 
             override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                result.postValue(Result.Error(t.toString()))
+                result.value = Result.Error(t.toString())
             }
         })
 
@@ -138,8 +153,8 @@ class UserRepository private constructor(
         return result
     }
 
-    fun uploadStory(imageFile: File, description: String): LiveData<Result<AddNewStoryResponse>> {
-        val result = MutableLiveData<Result<AddNewStoryResponse>>()
+    fun uploadStory(imageFile: File, description: String): LiveData<Result<UploadStoryResponse>> {
+        val result = MutableLiveData<Result<UploadStoryResponse>>()
         result.value = Result.Loading
         val requestBody =description.toRequestBody("text/plain".toMediaType())
         val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
@@ -151,20 +166,26 @@ class UserRepository private constructor(
         CoroutineScope(Dispatchers.IO).launch {
             userPreference.getSession().collect { user ->
                 val client = apiService.addNewStory(multipartBody, requestBody, "Bearer ${user.token}")
-                client.enqueue(object : Callback<AddNewStoryResponse> {
+                client.enqueue(object : Callback<UploadStoryResponse> {
                     override fun onResponse(
-                        call: Call<AddNewStoryResponse>,
-                        response: Response<AddNewStoryResponse>
+                        call: Call<UploadStoryResponse>,
+                        response: Response<UploadStoryResponse>
                     ) {
                         if (response.isSuccessful) {
                             val responseBody = response.body()
                             responseBody?.let {
                                 result.value = Result.Success(it)
                             }
+                        } else {
+                            val errorBody = response.errorBody()?.string()
+                            errorBody?.let {
+                                val errorResponse = Gson().fromJson(it, UploadStoryResponse::class.java)
+                                result.value = Result.Error(errorResponse.message)
+                            }
                         }
                     }
 
-                    override fun onFailure(call: Call<AddNewStoryResponse>, t: Throwable) {
+                    override fun onFailure(call: Call<UploadStoryResponse>, t: Throwable) {
                         result.value = Result.Error(t.toString())
                     }
                 })

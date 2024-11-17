@@ -76,22 +76,32 @@ class PostFragment : Fragment() {
                     when (result) {
                         is Result.Loading -> {
                             showLoading(true)
+                            true.disableInputFields()
                         }
 
                         is Result.Success -> {
                             showToast(result.data.message)
                             showLoading(false)
+                            false.disableInputFields()
                             findNavController().navigate(R.id.action_navigation_post_to_navigation_home)
                         }
 
                         is Result.Error -> {
                             showToast(result.error)
+                            false.disableInputFields()
                             showLoading(false)
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun Boolean.disableInputFields() {
+        binding.buttonAdd.isEnabled = !this
+        binding.edAddDescription.isEnabled = !this
+        binding.btnCamera.isEnabled = !this
+        binding.btnGallery.isEnabled = !this
     }
 
     private fun startGallery() = launchGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))

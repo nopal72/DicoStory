@@ -44,17 +44,22 @@ class LoginActivity : AppCompatActivity() {
                 when (result) {
                     is Result.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
+                        true.disableInputFields()
                     }
                     is Result.Success -> {
                         binding.progressBar.visibility = View.GONE
+                        false.disableInputFields()
                         startActivity(Intent(this, MainActivity::class.java))
                         finish()
                     }
                     is Result.Error -> {
                         binding.progressBar.visibility = View.GONE
+                        false.disableInputFields()
+                        binding.errorMessage.text = result.error
+                        binding.errorMessage.visibility = View.VISIBLE
                         Snackbar.make(
                             binding.root,
-                            "Terjadi kesalahan" + result.error,
+                            "Error: " + result.error,
                             Snackbar.LENGTH_SHORT
                         ).show()
                     }
@@ -66,5 +71,11 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
 
+    }
+
+    private fun Boolean.disableInputFields() {
+        binding.btnLogin.isEnabled = !this
+        binding.edLoginEmail.isEnabled = !this
+        binding.edLoginPassword.isEnabled = !this
     }
 }

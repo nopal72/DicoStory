@@ -37,40 +37,52 @@ class RegisterActivity : AppCompatActivity() {
 
             if (password == verifyPassword) {
                 val request = RegisterRequest(name, email, password)
-                registerViewModel.register(request)
+                registerViewModel.register(request).observe(this) { result ->
+                    when (result) {
+                        is Result.Loading -> {
+                            binding.progressBar.visibility = View.VISIBLE
+                            true.disableInputFields()
+                        }
+                        is Result.Success -> {
+                            binding.progressBar.visibility = View.GONE
+
+                            startActivity(Intent(this, LoginActivity::class.java))
+                            showToast(getString(R.string.registration_successful))
+                            finish()
+                        }
+                        is Result.Error -> {
+                            binding.progressBar.visibility = View.GONE
+
+                            binding.errorMessage.visibility = View.VISIBLE
+                            binding.errorMessage.text = result.error
+                            Snackbar.make(
+                                binding.root,
+                                "Error: " + result.error,
+                                Snackbar.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
             } else {
                 showToast(getString(R.string.password_mismatch))
             }
 
             val request = RegisterRequest(name, email, password)
 
-            registerViewModel.register(request).observe(this) { result ->
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                    }
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        startActivity(Intent(this, LoginActivity::class.java))
-                        showToast(getString(R.string.registration_successful))
-                        finish()
-                    }
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        Snackbar.make(
-                            binding.root,
-                            "Terjadi kesalahan" + result.error,
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
         }
 
         binding.textSignup.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
         }
 
+    }
+
+    private fun Boolean.disableInputFields() {
+        binding.btnLogin.isEnabled = !this
+        binding.edRegisterName.isEnabled = !this
+        binding.edRegisterEmail.isEnabled = !this
+        binding.edRegisterPassword.isEnabled = !this
+        binding.edVerifyPassword.isEnabled = !this
     }
 
 

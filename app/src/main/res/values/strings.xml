@@ -1,18 +1,18 @@
 <resources>
     <string name="app_name">DicoStory</string>
     <string name="title_home">Home</string>
-    <string name="tag_line">Di Setiap Cerita Ada Makna, dan di Setiap Makna Ada Keberanian untuk Berbagi</string>
+    <string name="tag_line">In every story there is meaning, and in every meaning there is courage to share</string>
     <string name="email">Email</string>
-    <string name="password">password</string>
+    <string name="password">Password</string>
     <string name="login">login</string>
-    <string name="text_signup">belum punya akun? <b>signup</b></string>
-    <string name="type_password">masukkan password</string>
-    <string name="error_password">password harus lebih dari 8 karakter!</string>
-    <string name="text_registration">lengkapi data dirimu</string>
+    <string name="text_signup">dont have an account yet? <b>signup</b></string>
+    <string name="type_password">enter password</string>
+    <string name="error_password">The password must be more than 8 characters!</string>
+    <string name="text_registration">complete your details</string>
     <string name="register">register</string>
-    <string name="text_verify_password">verifikasi password</string>
-    <string name="text_login">sudah punya akun? <b>login</b></string>
-    <string name="name">nama</string>
+    <string name="text_verify_password">verify password</string>
+    <string name="text_login">already have an account? <b>login</b></string>
+    <string name="name">name</string>
     <string name="registration_successful">registrasi successful</string>
     <string name="registration_failed">registration failed</string>
     <string name="password_mismatch">password mismatch</string>
@@ -28,4 +28,10 @@
     <string name="title_gallery">gallery</string>
     <string name="button_gallery">button gallery</string>
     <string name="button_camera">button camera</string>
+    <string name="email_is_invalid">email is invalid</string>
+    <string name="error_message">error message</string>
+    <string name="appwidget_text">DicoStory Banner</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">This is an app widget description</string>
+    <string name="empty_text">NO DATA</string>
 </resources>
