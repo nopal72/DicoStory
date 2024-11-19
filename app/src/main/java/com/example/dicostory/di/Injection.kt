@@ -6,7 +6,6 @@ import com.example.dicostory.data.local.room.StoryDatabase
 import com.example.dicostory.data.pref.UserPreference
 import com.example.dicostory.data.pref.dataStore
 import com.example.dicostory.data.remote.api.ApiConfig
-import com.example.dicostory.utils.AppExecutors
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 
@@ -17,7 +16,6 @@ object Injection {
         val apiService = ApiConfig.getApiService(user.token)
         val database = StoryDatabase.getInstance(context)
         val dao = database.storyDao()
-        val appExecutors = AppExecutors()
-        return UserRepository.getInstance(pref, apiService, appExecutors, dao)
+        return UserRepository.getInstance(pref, apiService, dao)
     }
 }

@@ -6,5 +6,9 @@
     android:minWidth="250dp"
     android:minHeight="110dp"
     android:previewImage="@drawable/example_appwidget_preview"
+
+    android:previewLayout="@layout/image_banner_widget"
+    android:targetCellWidth="4"
+    android:targetCellHeight="2"
     android:updatePeriodMillis="0"
     android:widgetCategory="home_screen" />

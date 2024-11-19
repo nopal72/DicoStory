@@ -7,5 +7,5 @@ import com.example.dicostory.data.Result
 import com.example.dicostory.data.local.entity.StoryEntity
 
 class HomeViewModel(private val repository: UserRepository) : ViewModel() {
-    val stories: LiveData<Result<List<StoryEntity>>> = repository.getStories()
+    fun getStories(): LiveData<Result<List<StoryEntity>>> = repository.getStories()
 }

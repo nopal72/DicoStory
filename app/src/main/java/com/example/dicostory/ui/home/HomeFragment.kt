@@ -14,7 +14,6 @@ import com.example.dicostory.databinding.FragmentHomeBinding
 import com.example.dicostory.ui.ViewModelFactory
 import com.example.dicostory.data.Result
 import com.example.dicostory.data.local.entity.StoryEntity
-import com.example.dicostory.data.remote.response.ListStoryItem
 import com.google.android.material.snackbar.Snackbar
 
 class HomeFragment : Fragment() {
@@ -39,7 +38,7 @@ class HomeFragment : Fragment() {
         binding.rvStory.layoutManager = LinearLayoutManager(requireContext())
         binding.rvStory.addItemDecoration(itemDecoration)
 
-        viewModel.stories.observe(viewLifecycleOwner) { result ->
+        viewModel.getStories().observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Result.Loading ->{
                     binding.progressBar.visibility = View.VISIBLE
@@ -53,7 +52,7 @@ class HomeFragment : Fragment() {
                     binding.progressBar.visibility = View.GONE
                     Snackbar.make(
                         binding.root,
-                        "Terjadi kesalahan" + result.error,
+                        result.error,
                         Snackbar.LENGTH_SHORT
                     ).show()
                 }
@@ -62,6 +61,11 @@ class HomeFragment : Fragment() {
 
         binding.btnToPost.setOnClickListener{
             findNavController().navigate(R.id.action_navigation_home_to_navigation_post)
+        }
+
+        binding.swipeRefresh.setOnRefreshListener {
+            viewModel.getStories()
+            binding.swipeRefresh.isRefreshing = false
         }
 
         return binding.root
@@ -73,7 +77,4 @@ class HomeFragment : Fragment() {
         binding.rvStory.adapter = adapter
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
 }

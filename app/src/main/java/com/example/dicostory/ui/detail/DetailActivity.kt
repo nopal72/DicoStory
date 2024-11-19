@@ -43,7 +43,7 @@ class DetailActivity : AppCompatActivity() {
                             binding.progressBar.visibility = View.GONE
                             Snackbar.make(
                                 binding.root,
-                                "Terjadi kesalahan" + result.error,
+                                result.error,
                                 Snackbar.LENGTH_SHORT
                             ).show()
                         }

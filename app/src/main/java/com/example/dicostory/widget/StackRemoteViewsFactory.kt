@@ -1,20 +1,13 @@
 package com.example.dicostory.widget
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.net.Uri
 import android.util.Log
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService
-import androidx.core.os.bundleOf
 import com.bumptech.glide.Glide
 import com.example.dicostory.R
 import com.example.dicostory.data.local.entity.StoryEntity
 import com.example.dicostory.data.local.room.StoryDatabase
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 internal class StackRemoteViewsFactory(

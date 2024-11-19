@@ -57,7 +57,7 @@ class RegisterActivity : AppCompatActivity() {
                             binding.errorMessage.text = result.error
                             Snackbar.make(
                                 binding.root,
-                                "Error: " + result.error,
+                                result.error,
                                 Snackbar.LENGTH_SHORT
                             ).show()
                         }
@@ -66,9 +66,6 @@ class RegisterActivity : AppCompatActivity() {
             } else {
                 showToast(getString(R.string.password_mismatch))
             }
-
-            val request = RegisterRequest(name, email, password)
-
         }
 
         binding.textSignup.setOnClickListener {

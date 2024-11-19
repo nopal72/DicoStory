@@ -14,7 +14,6 @@
     <string name="text_login">sudah memiliki akun? <b>login</b></string>
     <string name="name">nama</string>
     <string name="registration_successful">registrasi berhasil</string>
-    <string name="registration_failed">registrasi gagal</string>
     <string name="password_mismatch">ketidakcocokan kata sandi</string>
     <string name="image_story">cerita gambar</string>
     <string name="text_name">nama</string>
@@ -31,9 +30,9 @@
     <string name="email_is_invalid">email tidak valid</string>
     <string name="error_message">pesan kesalahan</string>
     <string name="appwidget_text">DicoStory Spanduk</string>
-    <string name="add_widget">Tambahkan widget</string>
     <string name="app_widget_description">Ini adalah deskripsi widget aplikasi</string>
     <string name="empty_text">NO DATA</string>
     <string name="image_banner">spanduk gambar</string>
     <string name="text_set_language">mengatur bahasa</string>
+    <string name="book_image">gambar buku</string>
 </resources>

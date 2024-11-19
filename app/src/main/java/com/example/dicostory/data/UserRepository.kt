@@ -14,7 +14,6 @@ import com.example.dicostory.data.remote.response.UploadStoryResponse
 import com.example.dicostory.data.remote.response.DetailResponse
 import com.example.dicostory.data.remote.response.RegisterResponse
 import com.example.dicostory.data.remote.response.StoryResponse
-import com.example.dicostory.utils.AppExecutors
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +32,6 @@ import java.io.File
 class UserRepository private constructor(
     private val userPreference: UserPreference,
     private val apiService: ApiService,
-    private val appExecutors: AppExecutors,
     private val storyDao: StoryDao
 ) {
 
@@ -65,7 +63,7 @@ class UserRepository private constructor(
                                 true
                             )
                             CoroutineScope(Dispatchers.IO).launch {
-                                userPreference.saveSession(user)
+                                saveSession(user)
                             }
                             result.postValue(Result.Success(it))
                         } else {
@@ -235,42 +233,16 @@ class UserRepository private constructor(
         return result
     }
 
-    fun getImageStory(): LiveData<Result<List<String>>> {
-        val result = MutableLiveData<Result<List<String>>>()
-        result.value = Result.Loading
-
-        val client = apiService.getStories()
-        client.enqueue(object : Callback<StoryResponse> {
-            override fun onResponse(
-                call: Call<StoryResponse>,
-                response: Response<StoryResponse>
-            ) {
-                if (response.isSuccessful && response.body() != null) {
-                    val imageUrls = response.body()!!.listStory.map { it.photoUrl }
-                    result.postValue(Result.Success(imageUrls))
-                } else {
-                    result.postValue(Result.Error(response.message()))
-                }
-            }
-            override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
-                result.postValue(Result.Error(t.toString()))
-            }
-        })
-
-        return result
-    }
-
     companion object {
         @Volatile
         private var instance: UserRepository? = null
         fun getInstance(
             userPreference: UserPreference,
             apiService: ApiService,
-            appExecutors: AppExecutors,
             storyDao: StoryDao
         ): UserRepository =
             instance ?: synchronized(this) {
-                instance ?: UserRepository(userPreference, apiService, appExecutors, storyDao)
+                instance ?: UserRepository(userPreference, apiService, storyDao)
             }.also { instance = it }
     }
 }

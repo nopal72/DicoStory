@@ -5,11 +5,8 @@ import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.dicostory.mainActivity.MainActivity
 import com.example.dicostory.R
 import com.example.dicostory.databinding.ActivityLoginBinding
@@ -57,7 +54,7 @@ class LoginActivity : AppCompatActivity() {
                         binding.errorMessage.visibility = View.VISIBLE
                         Snackbar.make(
                             binding.root,
-                            "Error: " + result.error,
+                            result.error,
                             Snackbar.LENGTH_SHORT
                         ).show()
                     }

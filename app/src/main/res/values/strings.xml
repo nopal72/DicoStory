@@ -14,7 +14,6 @@
     <string name="text_login">already have an account? <b>login</b></string>
     <string name="name">name</string>
     <string name="registration_successful">registration successful</string>
-    <string name="registration_failed">registration failed</string>
     <string name="password_mismatch">password mismatch</string>
     <string name="image_story">image story</string>
     <string name="text_name">name</string>
@@ -31,7 +30,6 @@
     <string name="email_is_invalid">email is invalid</string>
     <string name="error_message">error message</string>
     <string name="appwidget_text">DicoStory Banner</string>
-    <string name="add_widget">Add widget</string>
     <string name="app_widget_description">This is an app widget description</string>
     <string name="empty_text">NO DATA</string>
     <string name="image_banner">image banner</string>
