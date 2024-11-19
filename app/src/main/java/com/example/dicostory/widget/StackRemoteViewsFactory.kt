@@ -22,7 +22,6 @@ internal class StackRemoteViewsFactory(
 ) : RemoteViewsService.RemoteViewsFactory {
 
     private val mImageUrls = ArrayList<String>()
-    private val mWidgetItems = ArrayList<Bitmap>()
     private var stories: List<StoryEntity> = emptyList()
 
     override fun onCreate() {
@@ -55,18 +54,18 @@ internal class StackRemoteViewsFactory(
 
         val story = stories[p0]
         val rv = RemoteViews(mContext.packageName, R.layout.widget_item)
-        val bitmap = Glide.with(mContext)
-            .asBitmap()
-            .load(story.photoUrl)
-            .submit()
-            .get()
+        try {
+            val bitmap = Glide.with(mContext)
+                .asBitmap()
+                .load(story.photoUrl)
+                .override(300,300)
+                .submit()
+                .get()
+            rv.setImageViewBitmap(R.id.imageView, bitmap)
+        } catch (e: Exception) {
+            rv.setImageViewResource(R.id.imageView, R.drawable.ic_image_place_holder)
+        }
         rv.setTextViewText(R.id.banner_text, story.name)
-        rv.setImageViewBitmap(R.id.imageView, bitmap)
-
-        // Tambahkan PendingIntent untuk interaksi jika diperlukan
-        val extras = bundleOf("story_id" to story.id)
-        val fillInIntent = Intent().putExtras(extras)
-        rv.setOnClickFillInIntent(R.id.imageView, fillInIntent)
 
         return rv
     }
@@ -75,7 +74,7 @@ internal class StackRemoteViewsFactory(
 
     override fun getViewTypeCount(): Int = 1
 
-    override fun getItemId(i: Int): Long = i.toLong()
+    override fun getItemId(i: Int): Long = 0
 
-    override fun hasStableIds(): Boolean = true
+    override fun hasStableIds(): Boolean = false
 }
