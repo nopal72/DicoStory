@@ -4,7 +4,38 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".ui.setting.SettingFragment">
+    tools:context=".ui.setting.SettingFragment"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/title_setting"
+        android:text="@string/title_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_language_setting"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/text_set_language"
+        android:layout_marginTop="8dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/title_setting"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <ImageView
+        android:id="@+id/btn_setting"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:contentDescription="@string/title_setting"
+        android:src="@drawable/ic_setting"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_setting"/>
 
     <Button
         android:id="@+id/btn_logout"

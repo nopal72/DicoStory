@@ -3,6 +3,7 @@ package com.example.dicostory.ui.setting
 import android.content.Intent
 import androidx.fragment.app.viewModels
 import android.os.Bundle
+import android.provider.Settings
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +32,10 @@ class SettingFragment : Fragment() {
             viewModel.logout()
             val intent = Intent(requireContext(), LoginActivity::class.java)
             startActivity(intent)
+        }
+
+        binding.btnSetting.setOnClickListener {
+            startActivity(Intent(Settings.ACTION_LOCALE_SETTINGS))
         }
 
         return binding.root

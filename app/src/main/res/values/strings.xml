@@ -13,13 +13,13 @@
     <string name="text_verify_password">verify password</string>
     <string name="text_login">already have an account? <b>login</b></string>
     <string name="name">name</string>
-    <string name="registration_successful">registrasi successful</string>
+    <string name="registration_successful">registration successful</string>
     <string name="registration_failed">registration failed</string>
     <string name="password_mismatch">password mismatch</string>
     <string name="image_story">image story</string>
     <string name="text_name">name</string>
     <string name="text_description">description</string>
-    <string name="text_date">tanggal</string>
+    <string name="text_date">date</string>
     <string name="text_share_story">share your stories</string>
     <string name="title_post">Post</string>
     <string name="title_setting">Setting</string>
@@ -35,4 +35,6 @@
     <string name="app_widget_description">This is an app widget description</string>
     <string name="empty_text">NO DATA</string>
     <string name="image_banner">image banner</string>
+    <string name="text_set_language">set the language</string>
+    <string name="book_image">book image</string>
 </resources>

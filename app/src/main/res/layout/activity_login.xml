@@ -32,7 +32,19 @@
         android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/tagLine"/>
+        app:layout_constraintBottom_toTopOf="@+id/iv_book"/>
+
+    <ImageView
+        android:id="@+id/iv_book"
+        android:layout_width="wrap_content"
+        android:layout_height="150dp"
+        android:contentDescription="@string/book_image"
+        android:src="@drawable/book"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/tagLine"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
     <TextView
         android:id="@+id/error_message"
@@ -55,6 +67,7 @@
         android:layout_marginEnd="16dp"
         android:text="@string/tag_line"
         android:textColor="@color/black"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/text_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -67,6 +80,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/email"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/email_layout"/>
 
@@ -80,6 +94,7 @@
         android:layout_marginBottom="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@id/guideline"
         app:startIconDrawable="@drawable/ic_email">
 
@@ -98,6 +113,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/password"
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -110,6 +126,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:layout_constraintTop_toBottomOf="@id/text_password"
         app:startIconDrawable="@drawable/ic_lock"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -130,6 +147,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_layout"/>
@@ -141,6 +159,7 @@
         android:focusable="true"
         android:text="@string/text_signup"
         android:clickable="true"
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@+id/btn_login"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -150,6 +169,6 @@
         android:layout_height="wrap_content"
         android:id="@+id/guideline"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.5"/>
+        app:layout_constraintGuide_percent="0.6"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -60,7 +60,7 @@ class DetailActivity : AppCompatActivity() {
 
         Glide.with(this)
             .load(story.photoUrl)
-            .into(binding.ivDetail)
+            .into(binding.ivStory)
         binding.tvDate.text = date?.let { outputFormat.format(it) }
         binding.tvName.text = story.name
         binding.tvDescription.text = story.description
