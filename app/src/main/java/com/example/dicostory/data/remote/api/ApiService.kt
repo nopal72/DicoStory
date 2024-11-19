@@ -11,6 +11,8 @@ import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Headers
@@ -21,26 +23,26 @@ import retrofit2.http.Path
 
 interface ApiService {
 
-    @Headers("Content-Type: application/json")
+    @FormUrlEncoded
     @POST("register")
     fun registerUser(
-        @Body body: RegisterRequest
+        @Field("name") name: String,
+        @Field("email") email: String,
+        @Field("password") password: String
     ): Call<RegisterResponse>
 
-    @Headers("Content-Type: application/json")
+    @FormUrlEncoded
     @POST("login")
     fun loginUser(
-        @Body body: LoginRequest
+        @Field("email") email: String,
+        @Field("password") password: String
     ): Call<LoginResponse>
 
     @GET("stories")
-    fun getStories(
-        @Header("Authorization") token: String
-    ): Call<StoryResponse>
+    fun getStories(): Call<StoryResponse>
 
     @GET("stories/{id}")
     fun getDetailStory(
-        @Header("Authorization") token: String,
         @Path("id") id: String
     ): Call<DetailResponse>
 
@@ -48,7 +50,6 @@ interface ApiService {
     @POST("stories")
     fun addNewStory(
         @Part file: MultipartBody.Part,
-        @Part("description")description:RequestBody,
-        @Header("Authorization") token: String
+        @Part("description")description:RequestBody
     ): Call<UploadStoryResponse>
 }

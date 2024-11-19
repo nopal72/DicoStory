@@ -13,6 +13,7 @@ import com.example.dicostory.R
 import com.example.dicostory.databinding.FragmentHomeBinding
 import com.example.dicostory.ui.ViewModelFactory
 import com.example.dicostory.data.Result
+import com.example.dicostory.data.local.entity.StoryEntity
 import com.example.dicostory.data.remote.response.ListStoryItem
 import com.google.android.material.snackbar.Snackbar
 
@@ -45,7 +46,7 @@ class HomeFragment : Fragment() {
                 }
                 is Result.Success ->{
                     binding.progressBar.visibility = View.GONE
-                    val story = result.data.listStory
+                    val story = result.data
                     setStoryData(story)
                 }
                 is Result.Error -> {
@@ -66,7 +67,7 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
-    private fun setStoryData(story: List<ListStoryItem>) {
+    private fun setStoryData(story: List<StoryEntity>) {
         adapter = StoryAdapter()
         adapter.submitList(story)
         binding.rvStory.adapter = adapter

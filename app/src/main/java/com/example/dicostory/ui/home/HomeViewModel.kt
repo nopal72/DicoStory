@@ -3,9 +3,9 @@ package com.example.dicostory.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.example.dicostory.data.UserRepository
-import com.example.dicostory.data.remote.response.StoryResponse
 import com.example.dicostory.data.Result
+import com.example.dicostory.data.local.entity.StoryEntity
 
 class HomeViewModel(private val repository: UserRepository) : ViewModel() {
-    val stories: LiveData<Result<StoryResponse>> = repository.getStories()
+    val stories: LiveData<Result<List<StoryEntity>>> = repository.getStories()
 }

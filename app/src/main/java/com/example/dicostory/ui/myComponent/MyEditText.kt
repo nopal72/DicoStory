@@ -20,7 +20,9 @@ class MyEditText @JvmOverloads constructor(
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int){}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
                 if (s.toString().length < 8 && s.toString().isNotEmpty()) {
-                    error = context.getString(R.string.error_password)
+                    setError(context.getString(R.string.error_password), null)
+                } else {
+                    error = null
                 }
             }
 

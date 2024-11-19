@@ -2,7 +2,8 @@ package com.example.dicostory.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.dicostory.data.remote.api.ApiConfig
+import com.example.dicostory.data.local.entity.StoryEntity
+import com.example.dicostory.data.local.room.StoryDao
 import com.example.dicostory.data.remote.api.ApiService
 import com.example.dicostory.data.remote.response.LoginResponse
 import com.example.dicostory.data.pref.LoginRequest
@@ -19,6 +20,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -29,7 +31,10 @@ import retrofit2.Response
 import java.io.File
 
 class UserRepository private constructor(
-    private val userPreference: UserPreference, private val apiService: ApiService, private val appExecutors: AppExecutors
+    private val userPreference: UserPreference,
+    private val apiService: ApiService,
+    private val appExecutors: AppExecutors,
+    private val storyDao: StoryDao
 ) {
 
     suspend fun saveSession(user: UserModel) {
@@ -43,7 +48,7 @@ class UserRepository private constructor(
     fun login(request: LoginRequest): LiveData<Result<LoginResponse>> {
         val result = MutableLiveData<Result<LoginResponse>>()
         result.value = Result.Loading
-        val client = apiService.loginUser(request)
+        val client = apiService.loginUser(request.email, request.password)
         client.enqueue(object : Callback<LoginResponse> {
             override fun onResponse(
                 call: Call<LoginResponse>,
@@ -51,7 +56,6 @@ class UserRepository private constructor(
             ) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
-
                     responseBody?.let {
                         if(!it.error){
                             val user = UserModel(
@@ -63,9 +67,9 @@ class UserRepository private constructor(
                             CoroutineScope(Dispatchers.IO).launch {
                                 userPreference.saveSession(user)
                             }
-                            result.value = Result.Success(it)
+                            result.postValue(Result.Success(it))
                         } else {
-                            result.value = Result.Error(it.message)
+                            result.postValue(Result.Error(it.message))
                         }
                     }
                 }
@@ -73,13 +77,13 @@ class UserRepository private constructor(
                     val errorBody = response.errorBody()?.string()
                     errorBody?.let {
                         val errorResponse = Gson().fromJson(it, LoginResponse::class.java)
-                        result.value = Result.Error(errorResponse.message)
+                        result.postValue(Result.Error(errorResponse.message))
                     }
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                result.value = Result.Error(t.toString())
+                result.postValue(Result.Error(t.toString()))
             }
         })
 
@@ -89,7 +93,7 @@ class UserRepository private constructor(
     fun register(request: RegisterRequest): LiveData<Result<RegisterResponse>> {
         val result = MutableLiveData<Result<RegisterResponse>>()
         result.value = Result.Loading
-        val client = apiService.registerUser(request)
+        val client = apiService.registerUser(request.name,request.email, request.password)
         client.enqueue(object : Callback<RegisterResponse> {
             override fun onResponse(
                 call: Call<RegisterResponse>,
@@ -99,22 +103,22 @@ class UserRepository private constructor(
                     val body = response.body()
                     body?.let {
                         if (!it.error) {
-                            result.value = Result.Success(it)
+                            result.postValue(Result.Success(it))
                         } else {
-                            result.value = Result.Error(body.message)
+                            result.postValue(Result.Error(body.message))
                         }
                     }
                 } else {
                     val errorBody = response.errorBody()?.string()
                     errorBody?.let {
                         val errorResponse = Gson().fromJson(it, RegisterResponse::class.java)
-                        result.value = Result.Error(errorResponse.message)
+                        result.postValue(Result.Error(errorResponse.message))
                     }
                 }
             }
 
             override fun onFailure(call: Call<RegisterResponse>, t: Throwable) {
-                result.value = Result.Error(t.toString())
+                result.postValue(Result.Error(t.toString()))
             }
         })
 
@@ -125,31 +129,41 @@ class UserRepository private constructor(
         userPreference.logout()
     }
 
-    fun getStories(): LiveData<Result<StoryResponse>> {
-        val result = MutableLiveData<Result<StoryResponse>>()
+    fun getStories(): LiveData<Result<List<StoryEntity>>> {
+        val result = MutableLiveData<Result<List<StoryEntity>>>()
         result.value = Result.Loading
-        CoroutineScope(Dispatchers.IO).launch {
-            userPreference.getSession().collect { user ->
-                val client = apiService.getStories("Bearer ${user.token}")
-                client.enqueue(object : Callback<StoryResponse> {
-                    override fun onResponse(
-                        call: Call<StoryResponse>,
-                        response: Response<StoryResponse>
-                    ) {
-                        if (response.isSuccessful) {
-                            val responseBody = response.body()
-                            responseBody?.let {
-                                result.value = Result.Success(it)
-                            }
+        val client = apiService.getStories()
+        client.enqueue(object : Callback<StoryResponse> {
+            override fun onResponse(
+                call: Call<StoryResponse>,
+                response: Response<StoryResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    val listStory = responseBody?.listStory?.map { story ->
+                        StoryEntity(
+                            story.id,
+                            story.name,
+                            story.description,
+                            story.photoUrl,
+                            story.createdAt,
+                            story.lat,
+                            story.lon
+                        )
+                    } ?: emptyList()
+                    CoroutineScope(Dispatchers.IO).launch {
+                        storyDao.insertStories(listStory)
+                        withContext(Dispatchers.Main) {
+                            result.postValue(Result.Success(listStory))
                         }
                     }
-
-                    override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
-                        result.value = Result.Error(t.toString())
-                    }
-                })
+                }
             }
-        }
+
+            override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
+                result.postValue(Result.Error(t.toString()))
+            }
+        })
         return result
     }
 
@@ -163,68 +177,85 @@ class UserRepository private constructor(
             imageFile.name,
             requestImageFile
         )
-        CoroutineScope(Dispatchers.IO).launch {
-            userPreference.getSession().collect { user ->
-                val client = apiService.addNewStory(multipartBody, requestBody, "Bearer ${user.token}")
-                client.enqueue(object : Callback<UploadStoryResponse> {
-                    override fun onResponse(
-                        call: Call<UploadStoryResponse>,
-                        response: Response<UploadStoryResponse>
-                    ) {
-                        if (response.isSuccessful) {
-                            val responseBody = response.body()
-                            responseBody?.let {
-                                result.value = Result.Success(it)
-                            }
-                        } else {
-                            val errorBody = response.errorBody()?.string()
-                            errorBody?.let {
-                                val errorResponse = Gson().fromJson(it, UploadStoryResponse::class.java)
-                                result.value = Result.Error(errorResponse.message)
-                            }
-                        }
+        val client = apiService.addNewStory(multipartBody, requestBody)
+        client.enqueue(object : Callback<UploadStoryResponse> {
+            override fun onResponse(
+                call: Call<UploadStoryResponse>,
+                response: Response<UploadStoryResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    responseBody?.let {
+                        result.postValue(Result.Success(it))
                     }
-
-                    override fun onFailure(call: Call<UploadStoryResponse>, t: Throwable) {
-                        result.value = Result.Error(t.toString())
+                } else {
+                    val errorBody = response.errorBody()?.string()
+                    errorBody?.let {
+                        val errorResponse = Gson().fromJson(it, UploadStoryResponse::class.java)
+                        result.postValue(Result.Error(errorResponse.message))
                     }
-                })
+                }
             }
-        }
+
+            override fun onFailure(call: Call<UploadStoryResponse>, t: Throwable) {
+                result.postValue(Result.Error(t.toString()))
+            }
+        })
         return result
     }
 
     fun getDetailStory(id: String): LiveData<Result<DetailResponse>> {
         val result = MutableLiveData<Result<DetailResponse>>()
         result.value = Result.Loading
-        CoroutineScope(Dispatchers.IO).launch {
-            userPreference.getSession().collect { user ->
-                val client = apiService.getDetailStory("Bearer ${user.token}", id)
-                client.enqueue(object : Callback<DetailResponse> {
-                    override fun onResponse(
-                        call: Call<DetailResponse>,
-                        response: Response<DetailResponse>
-                    ) {
-                        if (response.isSuccessful) {
-                            val responseBody = response.body()
-                            responseBody?.let {
-                                result.postValue(Result.Success(it))
-                            } ?: run {
-                                result.postValue(Result.Error(Exception("Empty response body").toString()))
-                            }
-                        } else {
-                            result.postValue(
-                                Result.Error(Exception("Error: ${response.code()} ${response.message()}").toString())
-                            )
-                        }
+        val client = apiService.getDetailStory(id)
+        client.enqueue(object : Callback<DetailResponse> {
+            override fun onResponse(
+                call: Call<DetailResponse>,
+                response: Response<DetailResponse>
+            ) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    responseBody?.let {
+                        result.postValue(Result.Success(it))
+                    } ?: run {
+                        result.postValue(Result.Error(Exception("Empty response body").toString()))
                     }
-
-                    override fun onFailure(call: Call<DetailResponse>, t: Throwable) {
-                        result.postValue(Result.Error(t.toString()))
-                    }
-                })
+                } else {
+                    result.postValue(
+                        Result.Error(Exception("Error: ${response.code()} ${response.message()}").toString())
+                    )
+                }
             }
-        }
+
+            override fun onFailure(call: Call<DetailResponse>, t: Throwable) {
+                result.postValue(Result.Error(t.toString()))
+            }
+        })
+
+        return result
+    }
+
+    fun getImageStory(): LiveData<Result<List<String>>> {
+        val result = MutableLiveData<Result<List<String>>>()
+        result.value = Result.Loading
+
+        val client = apiService.getStories()
+        client.enqueue(object : Callback<StoryResponse> {
+            override fun onResponse(
+                call: Call<StoryResponse>,
+                response: Response<StoryResponse>
+            ) {
+                if (response.isSuccessful && response.body() != null) {
+                    val imageUrls = response.body()!!.listStory.map { it.photoUrl }
+                    result.postValue(Result.Success(imageUrls))
+                } else {
+                    result.postValue(Result.Error(response.message()))
+                }
+            }
+            override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
+                result.postValue(Result.Error(t.toString()))
+            }
+        })
 
         return result
     }
@@ -233,10 +264,13 @@ class UserRepository private constructor(
         @Volatile
         private var instance: UserRepository? = null
         fun getInstance(
-            userPreference: UserPreference
+            userPreference: UserPreference,
+            apiService: ApiService,
+            appExecutors: AppExecutors,
+            storyDao: StoryDao
         ): UserRepository =
             instance ?: synchronized(this) {
-                instance ?: UserRepository(userPreference, ApiConfig.getApiService(), AppExecutors())
+                instance ?: UserRepository(userPreference, apiService, appExecutors, storyDao)
             }.also { instance = it }
     }
 }
