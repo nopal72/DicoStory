@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-feature android:name="android.hardware.camera" />
 
     <uses-permission android:name="android.permission.CAMERA" />
@@ -22,6 +23,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.DicoStory"
         tools:targetApi="35">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAy7iWI5DJ2ABIVCeWn5XdYdPKYS9QNrGU" />
 
         <receiver
             android:name=".widget.ImageBannerWidget"
@@ -44,7 +49,8 @@
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="false" />
-        <activity android:name=".mainActivity.MainActivity"
+        <activity
+            android:name=".mainActivity.MainActivity"
             android:exported="true" />
         <activity
             android:name=".ui.splash.SplashActivity"

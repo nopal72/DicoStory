@@ -35,4 +35,6 @@
     <string name="image_banner">image banner</string>
     <string name="text_set_language">set the language</string>
     <string name="book_image">book image</string>
+    <string name="title_map">map</string>
+    <string name="send_location">send location?</string>
 </resources>

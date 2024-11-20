@@ -132,7 +132,7 @@ class UserRepository private constructor(
         result.value = Result.Loading
         CoroutineScope(Dispatchers.IO).launch {
             userPreference.getSession().collect {user ->
-                val client = apiService.getStories("Bearer ${user.token}")
+                val client = apiService.getStories(1,"Bearer ${user.token}")
                 client.enqueue(object : Callback<StoryResponse> {
                     override fun onResponse(
                         call: Call<StoryResponse>,
@@ -166,6 +166,48 @@ class UserRepository private constructor(
                 })
             }
         }
+        return result
+    }
+
+    fun getStoriesWithLocation(): LiveData<Result<List<StoryEntity>>> {
+        val result = MutableLiveData<Result<List<StoryEntity>>>()
+        result.value = Result.Loading
+        CoroutineScope(Dispatchers.IO).launch {
+            userPreference.getSession().collect{user ->
+                val client = apiService.getStoriesWithLocation(location = 1,"Bearer ${user.token}")
+                client.enqueue(object : Callback<StoryResponse>{
+                    override fun onResponse(
+                        call: Call<StoryResponse>,
+                        response: Response<StoryResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            val responseBody = response.body()
+                            val listStory = responseBody?.listStory?.map { story ->
+                                StoryEntity(
+                                    story.id,
+                                    story.name,
+                                    story.description,
+                                    story.photoUrl,
+                                    story.createdAt,
+                                    story.lat,
+                                    story.lon
+                                )
+                            } ?: emptyList()
+                            CoroutineScope(Dispatchers.IO).launch {
+                                storyDao.insertStories(listStory)
+                                withContext(Dispatchers.Main) {
+                                    result.postValue(Result.Success(listStory))
+                                }
+                            }
+                        }
+                    }
+                    override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
+                        result.postValue(Result.Error(t.toString()))
+                    }
+                })
+            }
+        }
+
         return result
     }
 
