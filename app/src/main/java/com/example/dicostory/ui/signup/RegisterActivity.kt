@@ -1,5 +1,7 @@
 package com.example.dicostory.ui.signup
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -29,6 +31,8 @@ class RegisterActivity : AppCompatActivity() {
         binding = ActivityRegisterBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        playAnimation()
+
         binding.btnLogin.setOnClickListener {
             val name = binding.edRegisterName.text.toString()
             val email = binding.edRegisterEmail.text.toString()
@@ -49,10 +53,10 @@ class RegisterActivity : AppCompatActivity() {
                             startActivity(Intent(this, LoginActivity::class.java))
                             showToast(getString(R.string.registration_successful))
                             finish()
+                            false.disableInputFields()
                         }
                         is Result.Error -> {
                             binding.progressBar.visibility = View.GONE
-
                             binding.errorMessage.visibility = View.VISIBLE
                             binding.errorMessage.text = result.error
                             Snackbar.make(
@@ -60,6 +64,7 @@ class RegisterActivity : AppCompatActivity() {
                                 result.error,
                                 Snackbar.LENGTH_SHORT
                             ).show()
+                            false.disableInputFields()
                         }
                     }
                 }
@@ -70,6 +75,35 @@ class RegisterActivity : AppCompatActivity() {
 
         binding.textSignup.setOnClickListener {
             startActivity(Intent(this, LoginActivity::class.java))
+        }
+
+    }
+
+    private fun playAnimation() {
+        val textRegistration = ObjectAnimator.ofFloat(binding.textRegistration, View.ALPHA, 1f).setDuration(500)
+        val name = ObjectAnimator.ofFloat(binding.textName, View.ALPHA, 1f).setDuration(500)
+        val nameLayout = ObjectAnimator.ofFloat(binding.nameLayout, View.ALPHA, 1f).setDuration(500)
+        val email = ObjectAnimator.ofFloat(binding.textEmail, View.ALPHA, 1f).setDuration(500)
+        val emailLayout = ObjectAnimator.ofFloat(binding.emailLayout, View.ALPHA, 1f).setDuration(500)
+        val password = ObjectAnimator.ofFloat(binding.textPassword, View.ALPHA, 1f).setDuration(500)
+        val passwordLayout = ObjectAnimator.ofFloat(binding.passwordLayout, View.ALPHA, 1f).setDuration(500)
+        val verifyPassword = ObjectAnimator.ofFloat(binding.verifyPasswordLayout, View.ALPHA, 1f).setDuration(500)
+        val verifyPasswordLayout = ObjectAnimator.ofFloat(binding.verifyPasswordLayout, View.ALPHA, 1f).setDuration(500)
+        val btnLogin = ObjectAnimator.ofFloat(binding.btnLogin, View.ALPHA, 1f).setDuration(500)
+        val textLogin = ObjectAnimator.ofFloat(binding.textSignup, View.ALPHA, 1f).setDuration(500)
+
+        val togetherName = AnimatorSet().apply {
+            playTogether(name, nameLayout)
+        }
+        val togetherEmail = AnimatorSet().apply {
+            playTogether(email, emailLayout)
+        }
+        val togetherPassword = AnimatorSet().apply {
+            playTogether(password, passwordLayout,verifyPasswordLayout,verifyPassword)
+        }
+        AnimatorSet().apply {
+            playSequentially(textRegistration, togetherName, togetherEmail, togetherPassword, btnLogin, textLogin)
+            start()
         }
 
     }

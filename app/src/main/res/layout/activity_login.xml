@@ -26,6 +26,8 @@
         android:text="@string/app_name"
         android:textStyle="bold"
         android:textSize="24sp"
+        android:alpha="0"
+        tools:alpha="100"
         android:layout_marginBottom="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
@@ -68,6 +70,8 @@
         android:text="@string/tag_line"
         android:textColor="@color/black"
         android:visibility="visible"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintBottom_toTopOf="@+id/text_email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -81,6 +85,8 @@
         android:layout_marginEnd="16dp"
         android:text="@string/email"
         android:visibility="visible"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/email_layout"/>
 
@@ -89,6 +95,8 @@
         android:layout_width="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:alpha="0"
+        tools:alpha="100"
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_marginBottom="16dp"
@@ -114,6 +122,8 @@
         android:layout_marginEnd="16dp"
         android:text="@string/password"
         android:visibility="visible"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintTop_toBottomOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -123,6 +133,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:alpha="0"
+        tools:alpha="100"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:layout_constraintTop_toBottomOf="@id/text_password"
         app:startIconDrawable="@drawable/ic_lock"
@@ -148,6 +160,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
         android:visibility="visible"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password_layout"/>
@@ -160,6 +174,8 @@
         android:text="@string/text_signup"
         android:clickable="true"
         android:visibility="visible"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintTop_toBottomOf="@+id/btn_login"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

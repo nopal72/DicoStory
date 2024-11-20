@@ -130,38 +130,42 @@ class UserRepository private constructor(
     fun getStories(): LiveData<Result<List<StoryEntity>>> {
         val result = MutableLiveData<Result<List<StoryEntity>>>()
         result.value = Result.Loading
-        val client = apiService.getStories()
-        client.enqueue(object : Callback<StoryResponse> {
-            override fun onResponse(
-                call: Call<StoryResponse>,
-                response: Response<StoryResponse>
-            ) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    val listStory = responseBody?.listStory?.map { story ->
-                        StoryEntity(
-                            story.id,
-                            story.name,
-                            story.description,
-                            story.photoUrl,
-                            story.createdAt,
-                            story.lat,
-                            story.lon
-                        )
-                    } ?: emptyList()
-                    CoroutineScope(Dispatchers.IO).launch {
-                        storyDao.insertStories(listStory)
-                        withContext(Dispatchers.Main) {
-                            result.postValue(Result.Success(listStory))
+        CoroutineScope(Dispatchers.IO).launch {
+            userPreference.getSession().collect {user ->
+                val client = apiService.getStories("Bearer ${user.token}")
+                client.enqueue(object : Callback<StoryResponse> {
+                    override fun onResponse(
+                        call: Call<StoryResponse>,
+                        response: Response<StoryResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            val responseBody = response.body()
+                            val listStory = responseBody?.listStory?.map { story ->
+                                StoryEntity(
+                                    story.id,
+                                    story.name,
+                                    story.description,
+                                    story.photoUrl,
+                                    story.createdAt,
+                                    story.lat,
+                                    story.lon
+                                )
+                            } ?: emptyList()
+                            CoroutineScope(Dispatchers.IO).launch {
+                                storyDao.insertStories(listStory)
+                                withContext(Dispatchers.Main) {
+                                    result.postValue(Result.Success(listStory))
+                                }
+                            }
                         }
                     }
-                }
-            }
 
-            override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
-                result.postValue(Result.Error(t.toString()))
+                    override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
+                        result.postValue(Result.Error(t.toString()))
+                    }
+                })
             }
-        })
+        }
         return result
     }
 
@@ -175,61 +179,68 @@ class UserRepository private constructor(
             imageFile.name,
             requestImageFile
         )
-        val client = apiService.addNewStory(multipartBody, requestBody)
-        client.enqueue(object : Callback<UploadStoryResponse> {
-            override fun onResponse(
-                call: Call<UploadStoryResponse>,
-                response: Response<UploadStoryResponse>
-            ) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    responseBody?.let {
-                        result.postValue(Result.Success(it))
+        CoroutineScope(Dispatchers.IO).launch {
+            userPreference.getSession().collect{user->
+                val client = apiService.addNewStory(multipartBody, requestBody,"Bearer ${user.token}")
+                client.enqueue(object : Callback<UploadStoryResponse> {
+                    override fun onResponse(
+                        call: Call<UploadStoryResponse>,
+                        response: Response<UploadStoryResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            val responseBody = response.body()
+                            responseBody?.let {
+                                result.postValue(Result.Success(it))
+                            }
+                        } else {
+                            val errorBody = response.errorBody()?.string()
+                            errorBody?.let {
+                                val errorResponse = Gson().fromJson(it, UploadStoryResponse::class.java)
+                                result.postValue(Result.Error(errorResponse.message))
+                            }
+                        }
                     }
-                } else {
-                    val errorBody = response.errorBody()?.string()
-                    errorBody?.let {
-                        val errorResponse = Gson().fromJson(it, UploadStoryResponse::class.java)
-                        result.postValue(Result.Error(errorResponse.message))
-                    }
-                }
-            }
 
-            override fun onFailure(call: Call<UploadStoryResponse>, t: Throwable) {
-                result.postValue(Result.Error(t.toString()))
+                    override fun onFailure(call: Call<UploadStoryResponse>, t: Throwable) {
+                        result.postValue(Result.Error(t.toString()))
+                    }
+                })
             }
-        })
+        }
         return result
     }
 
     fun getDetailStory(id: String): LiveData<Result<DetailResponse>> {
         val result = MutableLiveData<Result<DetailResponse>>()
         result.value = Result.Loading
-        val client = apiService.getDetailStory(id)
-        client.enqueue(object : Callback<DetailResponse> {
-            override fun onResponse(
-                call: Call<DetailResponse>,
-                response: Response<DetailResponse>
-            ) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body()
-                    responseBody?.let {
-                        result.postValue(Result.Success(it))
-                    } ?: run {
-                        result.postValue(Result.Error(Exception("Empty response body").toString()))
+        CoroutineScope(Dispatchers.IO).launch {
+            userPreference.getSession().collect{user->
+                val client = apiService.getDetailStory(id,"Bearer ${user.token}")
+                client.enqueue(object : Callback<DetailResponse> {
+                    override fun onResponse(
+                        call: Call<DetailResponse>,
+                        response: Response<DetailResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            val responseBody = response.body()
+                            responseBody?.let {
+                                result.postValue(Result.Success(it))
+                            } ?: run {
+                                result.postValue(Result.Error(Exception("Empty response body").toString()))
+                            }
+                        } else {
+                            result.postValue(
+                                Result.Error(Exception("Error: ${response.code()} ${response.message()}").toString())
+                            )
+                        }
                     }
-                } else {
-                    result.postValue(
-                        Result.Error(Exception("Error: ${response.code()} ${response.message()}").toString())
-                    )
-                }
-            }
 
-            override fun onFailure(call: Call<DetailResponse>, t: Throwable) {
-                result.postValue(Result.Error(t.toString()))
+                    override fun onFailure(call: Call<DetailResponse>, t: Throwable) {
+                        result.postValue(Result.Error(t.toString()))
+                    }
+                })
             }
-        })
-
+        }
         return result
     }
 

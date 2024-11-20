@@ -27,6 +27,8 @@
         android:text="@string/text_registration"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:alpha="0"
+        tools:alpha="100"
         android:layout_marginBottom="20dp"
         app:layout_constraintBottom_toTopOf="@+id/text_name"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,6 +41,8 @@
         android:text="@string/error_message"
         android:visibility="gone"
         android:textStyle="bold"
+        android:alpha="0"
+        tools:alpha="100"
         android:textColor="@color/red"
         app:layout_constraintTop_toBottomOf="@+id/text_registration"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,6 +55,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/name"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/name_layout"/>
 
@@ -60,6 +66,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_height="wrap_content"
+        android:alpha="0"
+        tools:alpha="100"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_marginBottom="16dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,6 +90,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/email"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/email_layout"/>
 
@@ -93,6 +103,8 @@
         android:layout_height="wrap_content"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_marginBottom="16dp"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/guideline"
@@ -113,6 +125,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:text="@string/password"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintTop_toBottomOf="@id/guideline"
         app:layout_constraintStart_toStartOf="parent"/>
 
@@ -122,6 +136,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:alpha="0"
+        tools:alpha="100"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:startIconDrawable="@drawable/ic_lock"
         app:layout_constraintTop_toBottomOf="@+id/text_password"
@@ -144,6 +160,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:alpha="0"
+        tools:alpha="100"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         app:startIconDrawable="@drawable/ic_lock"
         app:layout_constraintTop_toBottomOf="@+id/password_layout"
@@ -168,6 +186,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/verify_password_layout"/>
@@ -179,6 +199,8 @@
         android:focusable="true"
         android:text="@string/text_login"
         android:clickable="true"
+        android:alpha="0"
+        tools:alpha="100"
         app:layout_constraintTop_toBottomOf="@+id/btn_login"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
