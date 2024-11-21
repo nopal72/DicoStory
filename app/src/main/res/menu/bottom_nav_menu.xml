@@ -12,6 +12,12 @@
         android:title="@string/title_post" />
 
     <item
+        android:id="@+id/navigation_map"
+        android:icon="@drawable/ic_map"
+        android:title="@string/title_map" />
+
+
+    <item
         android:id="@+id/navigation_setting"
         android:icon="@drawable/ic_setting"
         android:title="@string/title_setting" />
