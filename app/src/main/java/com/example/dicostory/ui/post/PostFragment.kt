@@ -71,7 +71,6 @@ class PostFragment : Fragment() {
             Log.d("Image File", "showImage: ${imageFile.path}")
             val description = binding.edAddDescription.text.toString()
 
-
             viewModel.uploadStory(imageFile, description).observe(viewLifecycleOwner){ result ->
                 if (result != null) {
                     when (result) {

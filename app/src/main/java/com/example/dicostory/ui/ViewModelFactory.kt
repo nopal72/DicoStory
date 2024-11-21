@@ -8,7 +8,6 @@ import com.example.dicostory.di.Injection
 import com.example.dicostory.ui.detail.DetailViewModel
 import com.example.dicostory.ui.home.HomeViewModel
 import com.example.dicostory.ui.login.LoginViewModel
-import com.example.dicostory.ui.map.MapViewModel
 import com.example.dicostory.ui.post.PostViewModel
 import com.example.dicostory.ui.setting.SettingViewModel
 import com.example.dicostory.ui.signup.RegisterViewModel
@@ -39,9 +38,6 @@ class ViewModelFactory(private val repository: UserRepository) : ViewModelProvid
             }
             modelClass.isAssignableFrom(SplashViewModel::class.java) -> {
                 SplashViewModel(repository) as T
-            }
-            modelClass.isAssignableFrom(MapViewModel::class.java) -> {
-                MapViewModel(repository) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class: " + modelClass.name)
         }
