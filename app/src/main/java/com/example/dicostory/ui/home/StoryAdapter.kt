@@ -7,23 +7,24 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.dicostory.data.local.entity.StoryEntity
 import com.example.dicostory.databinding.ItemStoryCardBinding
 import com.example.dicostory.ui.detail.DetailActivity
 import java.text.SimpleDateFormat
 import java.util.Locale
 import androidx.core.util.Pair
+import androidx.paging.PagingDataAdapter
+import com.example.dicostory.data.remote.response.ListStoryItem
 
-class StoryAdapter: ListAdapter<StoryEntity, StoryAdapter.MyViewHolder>(DIFF_CALLBACK) {
+class StoryAdapter:
+    PagingDataAdapter<ListStoryItem, StoryAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     class MyViewHolder(private val binding: ItemStoryCardBinding) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(story: StoryEntity){
+        fun bind(story: ListStoryItem){
             val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
             val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-            val date = story.createdAt?.let { inputFormat.parse(it) }
+            val date = story.createdAt.let { inputFormat.parse(it) }
 
             binding.tvName.text = story.name
             binding.tvDescription.text = story.description
@@ -58,15 +59,15 @@ class StoryAdapter: ListAdapter<StoryEntity, StoryAdapter.MyViewHolder>(DIFF_CAL
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val story = getItem(position)
-        holder.bind(story)
+        story?.let { holder.bind(it) }
     }
 
     companion object {
-        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<StoryEntity>() {
-            override fun areContentsTheSame(oldItem: StoryEntity, newItem: StoryEntity): Boolean {
+        val DIFF_CALLBACK = object : DiffUtil.ItemCallback<ListStoryItem>() {
+            override fun areContentsTheSame(oldItem: ListStoryItem, newItem: ListStoryItem): Boolean {
                 return oldItem == newItem
             }
-            override fun areItemsTheSame(oldItem: StoryEntity, newItem: StoryEntity): Boolean {
+            override fun areItemsTheSame(oldItem: ListStoryItem, newItem: ListStoryItem): Boolean {
                 return oldItem.id == newItem.id
             }
         }

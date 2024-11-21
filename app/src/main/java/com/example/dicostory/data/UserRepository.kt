@@ -2,6 +2,10 @@ package com.example.dicostory.data
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.liveData
 import com.example.dicostory.data.local.entity.StoryEntity
 import com.example.dicostory.data.local.room.StoryDao
 import com.example.dicostory.data.remote.api.ApiService
@@ -12,13 +16,17 @@ import com.example.dicostory.data.pref.UserModel
 import com.example.dicostory.data.pref.UserPreference
 import com.example.dicostory.data.remote.response.UploadStoryResponse
 import com.example.dicostory.data.remote.response.DetailResponse
+import com.example.dicostory.data.remote.response.ListStoryItem
 import com.example.dicostory.data.remote.response.RegisterResponse
 import com.example.dicostory.data.remote.response.StoryResponse
+import com.example.dicostory.ui.home.StoryPagingSource
 import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -127,46 +135,18 @@ class UserRepository private constructor(
         userPreference.logout()
     }
 
-    fun getStories(): LiveData<Result<List<StoryEntity>>> {
-        val result = MutableLiveData<Result<List<StoryEntity>>>()
-        result.value = Result.Loading
-        CoroutineScope(Dispatchers.IO).launch {
-            userPreference.getSession().collect {user ->
-                val client = apiService.getStories("Bearer ${user.token}")
-                client.enqueue(object : Callback<StoryResponse> {
-                    override fun onResponse(
-                        call: Call<StoryResponse>,
-                        response: Response<StoryResponse>
-                    ) {
-                        if (response.isSuccessful) {
-                            val responseBody = response.body()
-                            val listStory = responseBody?.listStory?.map { story ->
-                                StoryEntity(
-                                    story.id,
-                                    story.name,
-                                    story.description,
-                                    story.photoUrl,
-                                    story.createdAt,
-                                    story.lat,
-                                    story.lon
-                                )
-                            } ?: emptyList()
-                            CoroutineScope(Dispatchers.IO).launch {
-                                storyDao.insertStories(listStory)
-                                withContext(Dispatchers.Main) {
-                                    result.postValue(Result.Success(listStory))
-                                }
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<StoryResponse>, t: Throwable) {
-                        result.postValue(Result.Error(t.toString()))
-                    }
-                })
-            }
+    fun getStories(): LiveData<PagingData<ListStoryItem>> {
+        val token = runBlocking {
+            userPreference.getSession().first().token
         }
-        return result
+        return Pager(
+            config = PagingConfig(
+                pageSize = 5
+            ),
+            pagingSourceFactory = {
+                StoryPagingSource(apiService, "Bearer $token")
+            }
+        ).liveData
     }
 
     fun getStoriesWithLocation(): LiveData<Result<List<StoryEntity>>> {

@@ -38,43 +38,30 @@ class HomeFragment : Fragment() {
         binding.rvStory.layoutManager = LinearLayoutManager(requireContext())
         binding.rvStory.addItemDecoration(itemDecoration)
 
-        viewModel.getStories().observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is Result.Loading ->{
-                    binding.progressBar.visibility = View.VISIBLE
-                }
-                is Result.Success ->{
-                    binding.progressBar.visibility = View.GONE
-                    val story = result.data
-                    setStoryData(story)
-                }
-                is Result.Error -> {
-                    binding.progressBar.visibility = View.GONE
-                    Snackbar.make(
-                        binding.root,
-                        result.error,
-                        Snackbar.LENGTH_SHORT
-                    ).show()
-                }
-            }
-        }
+        setStoryData()
 
         binding.btnToPost.setOnClickListener{
             findNavController().navigate(R.id.action_navigation_home_to_navigation_post)
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.getStories()
+            viewModel.story
             binding.swipeRefresh.isRefreshing = false
         }
 
         return binding.root
     }
 
-    private fun setStoryData(story: List<StoryEntity>) {
+    private fun setStoryData() {
         adapter = StoryAdapter()
-        adapter.submitList(story)
-        binding.rvStory.adapter = adapter
+        binding.rvStory.adapter = adapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                adapter.retry()
+            }
+        )
+        viewModel.story.observe(viewLifecycleOwner) {
+            adapter.submitData(lifecycle, it)
+        }
     }
 
 }
