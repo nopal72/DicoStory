@@ -11,8 +11,8 @@ object ApiConfig {
     private const val BASE_URL = BuildConfig.BASE_URL
 
     fun getApiService(): ApiService {
-        val loggingInterceptor =
-            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        val loggingInterceptor = if(BuildConfig.DEBUG) { HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY) }
+        else { HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE) }
         val client = OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .build()

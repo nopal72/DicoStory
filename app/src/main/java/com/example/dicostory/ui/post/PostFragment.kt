@@ -58,9 +58,11 @@ class PostFragment : Fragment() {
             requestPermissionLauncher.launch(REQUIRED_PERMISSION)
         }
 
-        binding.btnGallery.setOnClickListener { startGallery() }
-        binding.btnCamera.setOnClickListener { startCamera() }
-        binding.buttonAdd.setOnClickListener { uploadStory() }
+        binding.apply {
+            btnGallery.setOnClickListener { startGallery() }
+            btnCamera.setOnClickListener { startCamera() }
+            buttonAdd.setOnClickListener { uploadStory() }
+        }
 
         return binding.root
     }

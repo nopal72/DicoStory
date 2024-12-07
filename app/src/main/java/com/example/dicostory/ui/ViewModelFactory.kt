@@ -12,7 +12,6 @@ import com.example.dicostory.ui.map.MapsViewModel
 import com.example.dicostory.ui.post.PostViewModel
 import com.example.dicostory.ui.setting.SettingViewModel
 import com.example.dicostory.ui.signup.RegisterViewModel
-import com.example.dicostory.ui.splash.SplashViewModel
 
 class ViewModelFactory(private val repository: UserRepository) : ViewModelProvider.NewInstanceFactory() {
 
@@ -36,9 +35,6 @@ class ViewModelFactory(private val repository: UserRepository) : ViewModelProvid
             }
             modelClass.isAssignableFrom(RegisterViewModel::class.java) -> {
                 RegisterViewModel(repository) as T
-            }
-            modelClass.isAssignableFrom(SplashViewModel::class.java) -> {
-                SplashViewModel(repository) as T
             }
             modelClass.isAssignableFrom(MapsViewModel::class.java) -> {
                 MapsViewModel(repository) as T

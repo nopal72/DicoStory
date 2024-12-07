@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.example.dicostory.mainActivity.MainActivity
 import com.example.dicostory.R
 import com.example.dicostory.databinding.ActivityLoginBinding
@@ -14,6 +15,7 @@ import com.example.dicostory.ui.ViewModelFactory
 import com.example.dicostory.ui.signup.RegisterActivity
 import com.example.dicostory.data.Result
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.launch
 
 class LoginActivity : AppCompatActivity() {
 
@@ -29,43 +31,56 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        lifecycleScope.launch {
+            viewModel.getSession().collect{user->
+                if(user.isLogin){
+                    startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                    finish()
+                }
+            }
+        }
+
         playAnimation()
 
         binding.btnLogin.setOnClickListener {
             val email = binding.edLoginEmail.text.toString()
             val password = binding.edLoginPassword.text.toString()
-            viewModel.login(email, password)
-            viewModel.loginResult.observe(this) { result ->
-                when (result) {
-                    is Result.Loading -> {
-                        binding.progressBar.visibility = View.VISIBLE
-                        true.disableInputFields()
-                    }
-                    is Result.Success -> {
-                        binding.progressBar.visibility = View.GONE
-                        false.disableInputFields()
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
-                    }
-                    is Result.Error -> {
-                        binding.progressBar.visibility = View.GONE
-                        false.disableInputFields()
-                        binding.errorMessage.text = result.error
-                        binding.errorMessage.visibility = View.VISIBLE
-                        Snackbar.make(
-                            binding.root,
-                            result.error,
-                            Snackbar.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-            }
+            login(email, password)
         }
 
         binding.textSignup.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
 
+    }
+
+    private fun login(email: String, password: String) {
+        viewModel.login(email, password)
+        viewModel.loginResult.observe(this) { result ->
+            when (result) {
+                is Result.Loading -> {
+                    binding.progressBar.visibility = View.VISIBLE
+                    true.disableInputFields()
+                }
+                is Result.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    false.disableInputFields()
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                }
+                is Result.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    false.disableInputFields()
+                    binding.errorMessage.text = result.error
+                    binding.errorMessage.visibility = View.VISIBLE
+                    Snackbar.make(
+                        binding.root,
+                        result.error,
+                        Snackbar.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
     }
 
     private fun playAnimation() {
