@@ -12,9 +12,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.dicostory.R
 import com.example.dicostory.databinding.FragmentHomeBinding
 import com.example.dicostory.ui.ViewModelFactory
-import com.example.dicostory.data.Result
-import com.example.dicostory.data.local.entity.StoryEntity
-import com.google.android.material.snackbar.Snackbar
 
 class HomeFragment : Fragment() {
 
@@ -45,7 +42,7 @@ class HomeFragment : Fragment() {
         }
 
         binding.swipeRefresh.setOnRefreshListener {
-            viewModel.story
+            setStoryData()
             binding.swipeRefresh.isRefreshing = false
         }
 

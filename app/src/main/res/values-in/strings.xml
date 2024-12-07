@@ -35,4 +35,7 @@
     <string name="image_banner">spanduk gambar</string>
     <string name="text_set_language">mengatur bahasa</string>
     <string name="book_image">gambar buku</string>
+    <string name="title_map">peta</string>
+    <string name="retry">coba lagi</string>
+    <string name="text_send_location">kirim lokasi</string>
 </resources>

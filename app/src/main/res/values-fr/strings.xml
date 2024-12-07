@@ -35,4 +35,7 @@
     <string name="image_banner">Image de la bannière</string>
     <string name="text_set_language">Paramétrer la langue</string>
     <string name="book_image">image du livre</string>
+    <string name="title_map">carte</string>
+    <string name="retry">reessayer</string>
+    <string name="text_send_location">envoyer le lieu</string>
 </resources>
