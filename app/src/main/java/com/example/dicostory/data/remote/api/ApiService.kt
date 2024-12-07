@@ -64,6 +64,8 @@ interface ApiService {
     fun addNewStory(
         @Part file: MultipartBody.Part,
         @Part("description")description:RequestBody,
+        @Part("lat")lat:RequestBody?,
+        @Part("lon")lon:RequestBody?,
         @Header
         ("Authorization") token: String
     ): Call<UploadStoryResponse>

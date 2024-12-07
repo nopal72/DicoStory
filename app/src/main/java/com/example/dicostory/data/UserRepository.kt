@@ -191,10 +191,12 @@ class UserRepository private constructor(
         return result
     }
 
-    fun uploadStory(imageFile: File, description: String): LiveData<Result<UploadStoryResponse>> {
+    fun uploadStory(imageFile: File, description: String, lat: Double? = null, lon: Double? = null): LiveData<Result<UploadStoryResponse>> {
         val result = MutableLiveData<Result<UploadStoryResponse>>()
         result.value = Result.Loading
-        val requestBody =description.toRequestBody("text/plain".toMediaType())
+        val requestBody = description.toRequestBody("text/plain".toMediaType())
+        val latBody = lat?.toString()?.toRequestBody("text/plain".toMediaType())
+        val lonBody = lon?.toString()?.toRequestBody("text/plain".toMediaType())
         val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
         val multipartBody = MultipartBody.Part.createFormData(
             "photo",
@@ -203,7 +205,12 @@ class UserRepository private constructor(
         )
         CoroutineScope(Dispatchers.IO).launch {
             userPreference.getSession().collect{user->
-                val client = apiService.addNewStory(multipartBody, requestBody,"Bearer ${user.token}")
+                val client = apiService.addNewStory(
+                    multipartBody,
+                    requestBody,
+                    latBody,
+                    lonBody,
+                    "Bearer ${user.token}")
                 client.enqueue(object : Callback<UploadStoryResponse> {
                     override fun onResponse(
                         call: Call<UploadStoryResponse>,
